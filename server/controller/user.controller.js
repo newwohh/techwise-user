@@ -30,7 +30,6 @@ exports.createUser = async (req, res) => {
     createToken(id, res);
     user.password = undefined;
     user.__v = undefined;
-    user._id = undefined;
 
     res.status(201).json({
       status: "success",
@@ -47,15 +46,12 @@ exports.createUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email }).select("+password");
 
     const id = user._id;
 
     await user.correctPassword(password, user.password);
-
     createToken(id, res);
-
     if (!user || !(await user.correctPassword(password, user.password))) {
       return res.status(401).json({
         status: "fail",
@@ -73,4 +69,12 @@ exports.loginUser = async (req, res) => {
     console.log(error.message);
     res.status(500).send(error);
   }
+};
+
+exports.logout = (req, res) => {
+  res.cookie("jwt", "loggedout", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+  res.status(200).json({ status: "success" });
 };
