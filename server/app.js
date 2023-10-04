@@ -1,6 +1,7 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const authRouter = require("./routes/userRoutes");
+const productRouter = require("./routes/productRoutes");
 
 const app = express();
 
@@ -26,5 +27,6 @@ app.use(function (req, res, next) {
 
 // routes
 app.use("/techwise/client/api/user", authRouter);
+app.use("/techwise/client/api/product", productRouter);
 
 module.exports = app;
