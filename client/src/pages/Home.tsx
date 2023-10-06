@@ -1,18 +1,16 @@
-import NavBar from "../components/NavBar";
 import banner from "../assets/banner.jpg";
 import BannerSearch from "../components/BannerSearch";
-import { Button, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
 import CategoriesBar from "../components/CategoriesBar";
 import Featured from "../components/Featured";
-import FooterSections from "../components/FooterSections";
+import { useScrollToTop } from "./ProductsByCategories";
 
 function Home() {
+  useScrollToTop();
+
   return (
     <div style={{ padding: "50px" }}>
       <header>
-        <nav>
-          <NavBar />
-        </nav>
         <section>
           <img
             src={banner}
@@ -54,29 +52,6 @@ function Home() {
           </div>
         </section>
       </main>
-      <footer>
-        <div style={{ display: "flex", justifyContent: "space-around" }}>
-          <div
-            style={{ marginTop: "80px", padding: "30px", textAlign: "center" }}
-          >
-            <Typography variant="h3">Why trust</Typography>
-            <Typography variant="h3" sx={{ fontWeight: 1000 }}>
-              Techwise ?
-            </Typography>
-            <Button
-              style={{
-                padding: "15px",
-                borderRadius: "30px",
-                backgroundColor: "black",
-                color: "white",
-              }}
-            >
-              Contact us
-            </Button>
-          </div>
-          <FooterSections />
-        </div>
-      </footer>
     </div>
   );
 }

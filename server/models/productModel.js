@@ -81,6 +81,11 @@ const productSchema = new mongoose.Schema({
       },
     },
   ],
+  images: [
+    {
+      type: String,
+    },
+  ],
 });
 
 productSchema.virtual("averageRating").get(function () {

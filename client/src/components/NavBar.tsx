@@ -37,106 +37,108 @@ function NavBar() {
   };
 
   return (
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <div>
-        <NavLink
-          style={{
-            textDecoration: "none",
-            color: "black",
-            fontFamily: "Helvetica",
-            fontSize: "20px",
-          }}
-          to="/"
-        >
-          Home
-        </NavLink>
-      </div>
-      <div>
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <IconButton
-            aria-label="more"
-            id="long-button"
-            aria-controls={open ? "long-menu" : undefined}
-            aria-expanded={open ? "true" : undefined}
-            aria-haspopup="true"
-            onClick={handleClick}
-            sx={{ width: "100px", height: "50px", padding: "-120px" }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6">Categories</Typography>
-          <Menu
-            id="long-menu"
-            MenuListProps={{
-              "aria-labelledby": "long-button",
+    <nav style={{ padding: "50px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <div>
+          <NavLink
+            style={{
+              textDecoration: "none",
+              color: "black",
+              fontFamily: "Helvetica",
+              fontSize: "20px",
             }}
-            anchorEl={anchorEl}
-            open={open}
-            onClose={handleClose}
-            PaperProps={{
-              style: {
-                maxHeight: ITEM_HEIGHT * 4.5,
-                width: "20ch",
-              },
+            to="/"
+          >
+            Home
+          </NavLink>
+        </div>
+        <div>
+          <div style={{ display: "flex", alignItems: "center" }}>
+            <IconButton
+              aria-label="more"
+              id="long-button"
+              aria-controls={open ? "long-menu" : undefined}
+              aria-expanded={open ? "true" : undefined}
+              aria-haspopup="true"
+              onClick={handleClick}
+              sx={{ width: "50px", height: "50px", padding: "-120px" }}
+            >
+              <MenuIcon sx={{ height: "50px" }} />
+            </IconButton>
+            <Typography variant="h6">Categories</Typography>
+            <Menu
+              id="long-menu"
+              MenuListProps={{
+                "aria-labelledby": "long-button",
+              }}
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              PaperProps={{
+                style: {
+                  maxHeight: ITEM_HEIGHT * 4.5,
+                  width: "20ch",
+                },
+              }}
+            >
+              {options.map((option) => (
+                <MenuItem
+                  key={option}
+                  selected={option === "Pyxis"}
+                  onClick={handleClose}
+                >
+                  {option}
+                </MenuItem>
+              ))}
+            </Menu>
+          </div>
+        </div>
+        <div>
+          <TextField
+            sx={{ width: "500px" }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
+        <div>
+          <NavLink
+            style={{
+              fontSize: "20px",
+              textDecoration: "none",
+              color: "black",
+              fontFamily: "Helvetica",
+            }}
+            to="/about"
+          >
+            About
+          </NavLink>
+        </div>
+        <div>
+          <NavLink
+            to="to"
+            style={{
+              fontSize: "20px",
+              textDecoration: "none",
+              color: "black",
+              fontFamily: "Helvetica",
             }}
           >
-            {options.map((option) => (
-              <MenuItem
-                key={option}
-                selected={option === "Pyxis"}
-                onClick={handleClose}
-              >
-                {option}
-              </MenuItem>
-            ))}
-          </Menu>
+            Help
+          </NavLink>
         </div>
       </div>
-      <div>
-        <TextField
-          sx={{ width: "500px" }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </div>
-      <div>
-        <NavLink
-          style={{
-            fontSize: "20px",
-            textDecoration: "none",
-            color: "black",
-            fontFamily: "Helvetica",
-          }}
-          to="/about"
-        >
-          About
-        </NavLink>
-      </div>
-      <div>
-        <NavLink
-          to="to"
-          style={{
-            fontSize: "20px",
-            textDecoration: "none",
-            color: "black",
-            fontFamily: "Helvetica",
-          }}
-        >
-          Help
-        </NavLink>
-      </div>
-    </div>
+    </nav>
   );
 }
 

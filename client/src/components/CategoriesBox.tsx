@@ -1,20 +1,24 @@
-import { Button, Typography } from "@mui/material";
+import { Typography } from "@mui/material";
+import { NavLink } from "react-router-dom";
 
 function CategoriesBox({ icon, title }: { icon: JSX.Element; title: string }) {
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
-      <Button
+      <NavLink
         style={{
           borderRadius: "30px",
           padding: "10px",
           color: "black",
           display: "flex",
           flexDirection: "column",
+          alignItems: "center",
+          textDecoration: "none",
         }}
+        to={`${title}`}
       >
         <Typography>{icon}</Typography>
         <Typography>{title}</Typography>
-      </Button>
+      </NavLink>
     </div>
   );
 }

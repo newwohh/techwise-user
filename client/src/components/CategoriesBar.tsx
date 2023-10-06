@@ -8,23 +8,23 @@ import CategoriesBox from "./CategoriesBox";
 const allCategories = [
   {
     icon: <PhoneAndroidIcon />,
-    title: "Smartphones",
+    title: "Smartphone",
   },
   {
     icon: <LaptopIcon />,
-    title: "Laptops",
+    title: "Laptop",
   },
   {
     icon: <TabletMacIcon />,
-    title: "Tablets",
+    title: "Tablet",
   },
   {
     icon: <DesktopWindowsIcon />,
-    title: "Desktops",
+    title: "Desktop",
   },
   {
     icon: <CameraAltIcon />,
-    title: "Cameras",
+    title: "Camera",
   },
 ];
 
