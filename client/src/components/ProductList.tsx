@@ -2,17 +2,20 @@ import { Button, Rating, Typography } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { Product } from "../pages/ProductsByCategories";
 import axios from "axios";
-import { useContext } from "react";
-import { ProductContext } from "../context/ProductContext";
+import secureLocalStorage from "react-secure-storage";
 
 function ProductList({ product }: { product: Product }) {
-  const { setProduct } = useContext(ProductContext);
   const getProduct = async () => {
     const response = await axios.get(
       `http://localhost:8000/techwise/client/api/product/${product._id}`
     );
     console.log(response.data);
-    return setProduct(response.data.data._id);
+    if (localStorage.getItem("productId")) {
+      secureLocalStorage.removeItem("productId");
+      secureLocalStorage.setItem("productId", response.data.data._id);
+    } else if (!localStorage.getItem("productId")) {
+      secureLocalStorage.setItem("productId", response.data.data._id);
+    }
   };
 
   return (

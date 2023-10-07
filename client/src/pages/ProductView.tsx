@@ -1,25 +1,24 @@
 import { Button, Select, Typography } from "@mui/material";
-import React, { useContext } from "react";
-import { ProductContext } from "../context/ProductContext";
+import React from "react";
 import axios from "axios";
 import { Product } from "./ProductsByCategories";
+import secureLocalStorage from "react-secure-storage";
 
 function ProductView() {
   const [currproduct, setCurrProduct] = React.useState<Product>();
-  const { product } = useContext(ProductContext);
-
-  console.log(product);
-
+  const id = secureLocalStorage.getItem("productId");
+  console.log(id);
   const getProduct = async () => {
     const response = await axios.get(
-      `http://localhost:8000/techwise/client/api/product/${product}`
+      `http://localhost:8000/techwise/client/api/product/${id}`
     );
     console.log(response.data);
     return setCurrProduct(response.data.data);
   };
 
-  getProduct();
-  console.log(currproduct);
+  React.useEffect(() => {
+    getProduct();
+  }, [id]);
 
   return (
     <div style={{ padding: 70, display: "flex" }}>
