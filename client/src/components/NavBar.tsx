@@ -1,43 +1,75 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import SearchIcon from "@mui/icons-material/Search";
 import MenuIcon from "@mui/icons-material/Menu";
-import { InputAdornment, TextField, Typography } from "@mui/material";
-
-const options = [
-  "None",
-  "Atria",
-  "Callisto",
-  "Dione",
-  "Ganymede",
-  "Hangouts Call",
-  "Luna",
-  "Oberon",
-  "Phobos",
-  "Pyxis",
-  "Sedna",
-  "Titania",
-  "Triton",
-  "Umbriel",
-];
+import {
+  Autocomplete,
+  Badge,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
+import axios from "axios";
+import { Product } from "../pages/ProductsByCategories";
+import secureLocalStorage from "react-secure-storage";
+import MailIcon from "@mui/icons-material/Mail";
+import ProfileMenu from "./ProfileMenu";
 
 const ITEM_HEIGHT = 48;
 
+const categories = ["Laptop", "Smartphone"];
+
 function NavBar() {
+  const nav = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [productByCategory, setProductByCategory] = React.useState([]);
+  const [value, setValue] = React.useState<string | null>("");
+  const [category, setCategory] = React.useState<string>("");
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
+  const getProduct = async (id: string) => {
+    if (localStorage.getItem("productId")) {
+      secureLocalStorage.removeItem("productId");
+      secureLocalStorage.setItem("productId", id);
+    } else if (!localStorage.getItem("productId")) {
+      secureLocalStorage.setItem("productId", id);
+    }
+  };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
 
+  const getProductsByCategory = async (categoryName: string) => {
+    const response = await axios.get(
+      `http://localhost:8000/techwise/client/api/product/category/${categoryName}`
+    );
+    handleClose();
+
+    setCategory(categoryName);
+    setProductByCategory(response.data.data);
+  };
+
+  const viewData = async (value: string | null) => {
+    setValue(value);
+    const product: Product | undefined = productByCategory.find(
+      (product: Product) => {
+        return product.name === value;
+      }
+    );
+    getProduct(product._id);
+
+    nav(`/${category}/view/${value}`);
+  };
+
   return (
-    <nav style={{ padding: "50px" }}>
+    <nav style={{ padding: "80px" }}>
       <div
         style={{
           display: "flex",
@@ -87,11 +119,10 @@ function NavBar() {
                 },
               }}
             >
-              {options.map((option) => (
+              {categories.map((option) => (
                 <MenuItem
                   key={option}
-                  selected={option === "Pyxis"}
-                  onClick={handleClose}
+                  onClick={() => getProductsByCategory(option)}
                 >
                   {option}
                 </MenuItem>
@@ -99,43 +130,53 @@ function NavBar() {
             </Menu>
           </div>
         </div>
-        <div>
-          <TextField
-            sx={{ width: "500px" }}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <Stack spacing={2} sx={{ width: 350, display: "flex" }}>
+            <Autocomplete
+              id="free-solo-demo"
+              freeSolo
+              onChange={(event: React.FormEvent, newValue: string | null) => {
+                setValue(newValue);
+              }}
+              options={productByCategory.map((option: Product) => option.name)}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  sx={{ ml: 1, flex: 1 }}
+                  placeholder="Search..."
+                />
+              )}
+            />
+          </Stack>
+          <IconButton
+            onClick={() => viewData(value)}
+            edge="end"
+            sx={{
+              backgroundColor: "black",
+              color: "white",
+              width: "50px",
+              height: "50px",
+              ml: "20px",
             }}
-          />
+          >
+            <SearchIcon />
+          </IconButton>
         </div>
         <div>
-          <NavLink
-            style={{
-              fontSize: "20px",
-              textDecoration: "none",
-              color: "black",
-              fontFamily: "Helvetica",
-            }}
-            to="/about"
-          >
-            About
-          </NavLink>
+          <Badge color="secondary" badgeContent={2}>
+            <IconButton>
+              <MailIcon sx={{ height: "42px", width: "42px", margin: -1 }} />
+            </IconButton>
+          </Badge>
         </div>
         <div>
-          <NavLink
-            to="to"
-            style={{
-              fontSize: "20px",
-              textDecoration: "none",
-              color: "black",
-              fontFamily: "Helvetica",
-            }}
-          >
-            Help
-          </NavLink>
+          <ProfileMenu />
         </div>
       </div>
     </nav>

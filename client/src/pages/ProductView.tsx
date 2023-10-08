@@ -1,11 +1,9 @@
 import { Button, Select, Typography } from "@mui/material";
-import React from "react";
 import axios from "axios";
-import { Product } from "./ProductsByCategories";
 import secureLocalStorage from "react-secure-storage";
+import { useQuery } from "@tanstack/react-query";
 
 function ProductView() {
-  const [currproduct, setCurrProduct] = React.useState<Product>();
   const id = secureLocalStorage.getItem("productId");
   console.log(id);
   const getProduct = async () => {
@@ -13,17 +11,22 @@ function ProductView() {
       `http://localhost:8000/techwise/client/api/product/${id}`
     );
     console.log(response.data);
-    return setCurrProduct(response.data.data);
+    return response.data.data;
   };
 
-  React.useEffect(() => {
-    getProduct();
-  }, [id]);
+  const { data, isLoading } = useQuery({
+    queryFn: () => getProduct(),
+    queryKey: ["product"],
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div style={{ padding: 70, display: "flex" }}>
       <div style={{ display: "flex", flexDirection: "column" }}>
-        {currproduct?.images.map((el, i: number) => {
+        {data?.images.map((el: string, i: number) => {
           return (
             <img key={i} style={{ height: "150px", width: "150px" }} src={el} />
           );
@@ -32,7 +35,7 @@ function ProductView() {
       <div>
         <img
           style={{ height: "750px", width: "850px" }}
-          src={currproduct?.images[1]}
+          src={data?.images[1]}
         />
       </div>
       <div
@@ -43,11 +46,9 @@ function ProductView() {
           justifyContent: "space-between",
         }}
       >
-        <Typography variant="h3">{currproduct?.name}</Typography>
-        <Typography sx={{ fontWeight: "bold" }}>
-          {currproduct?.price}
-        </Typography>
-        <Typography>{currproduct?.description}</Typography>
+        <Typography variant="h3">{data?.name}</Typography>
+        <Typography sx={{ fontWeight: "bold" }}>{data?.price}</Typography>
+        <Typography>{data?.description}</Typography>
         <div>
           <Typography>Quantity</Typography>
           <Select sx={{ width: "100%" }}>

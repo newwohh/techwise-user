@@ -9,7 +9,7 @@ function Home() {
   useScrollToTop();
 
   return (
-    <div style={{ padding: "50px" }}>
+    <div>
       <header>
         <section>
           <img
@@ -19,8 +19,10 @@ function Home() {
               width: "100%",
               height: "800px",
               borderRadius: "50px",
-              marginTop: "60px",
+              marginTop: "10px",
               objectFit: "cover",
+              userSelect: "none",
+              pointerEvents: "none",
             }}
           />
         </section>

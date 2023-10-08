@@ -9,5 +9,6 @@ productRouter.get(
   "/category/:category",
   productController.getProductsByCategory
 );
+productRouter.get("/categories", productController.getProductsByCategory);
 
 module.exports = productRouter;

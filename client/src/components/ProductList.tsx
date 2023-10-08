@@ -1,20 +1,15 @@
 import { Button, Rating, Typography } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { Product } from "../pages/ProductsByCategories";
-import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 
 function ProductList({ product }: { product: Product }) {
   const getProduct = async () => {
-    const response = await axios.get(
-      `http://localhost:8000/techwise/client/api/product/${product._id}`
-    );
-    console.log(response.data);
     if (localStorage.getItem("productId")) {
       secureLocalStorage.removeItem("productId");
-      secureLocalStorage.setItem("productId", response.data.data._id);
+      secureLocalStorage.setItem("productId", product._id);
     } else if (!localStorage.getItem("productId")) {
-      secureLocalStorage.setItem("productId", response.data.data._id);
+      secureLocalStorage.setItem("productId", product._id);
     }
   };
 
