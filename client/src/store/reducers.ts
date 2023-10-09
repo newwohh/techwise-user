@@ -1,15 +1,16 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { Product } from "../pages/ProductsByCategories";
 
 const initialState = {
-  product: "",
+  products: [] as Product[], // Initialize as an empty array
 };
 
 const productSlice = createSlice({
   name: "product",
   initialState,
   reducers: {
-    setProduct: (state, action) => {
-      state.product = action.payload;
+    setProduct: (state, action: PayloadAction<Product>) => {
+      state.products = [...state.products, action.payload]; // Create a new array with the updated data
     },
   },
 });

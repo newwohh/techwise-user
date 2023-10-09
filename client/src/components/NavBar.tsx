@@ -15,8 +15,9 @@ import {
 import axios from "axios";
 import { Product } from "../pages/ProductsByCategories";
 import secureLocalStorage from "react-secure-storage";
-import MailIcon from "@mui/icons-material/Mail";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ProfileMenu from "./ProfileMenu";
+import { ProductContext } from "../context/ProductContext";
 
 const ITEM_HEIGHT = 48;
 
@@ -24,8 +25,11 @@ const categories = ["Laptop", "Smartphone"];
 
 function NavBar() {
   const nav = useNavigate();
+  const { product } = React.useContext(ProductContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [productByCategory, setProductByCategory] = React.useState([]);
+  const [productByCategory, setProductByCategory] = React.useState<Product[]>(
+    []
+  );
   const [value, setValue] = React.useState<string | null>("");
   const [category, setCategory] = React.useState<string>("");
   const open = Boolean(anchorEl);
@@ -58,18 +62,25 @@ function NavBar() {
 
   const viewData = async (value: string | null) => {
     setValue(value);
-    const product: Product | undefined = productByCategory.find(
-      (product: Product) => {
-        return product.name === value;
+    const productFromResponse: Product | undefined = productByCategory.find(
+      (productRes: Product) => {
+        return productRes.name === value;
       }
     );
-    getProduct(product._id);
-
+    if (productFromResponse) {
+      getProduct(productFromResponse._id);
+    }
     nav(`/${category}/view/${value}`);
   };
 
+  const cartItemsNumber: number | undefined = product?.length;
+
+  console.log(product, cartItemsNumber);
+
   return (
-    <nav style={{ padding: "80px" }}>
+    <nav
+      style={{ paddingTop: "80px", paddingLeft: "80px", paddingRight: "80px" }}
+    >
       <div
         style={{
           display: "flex",
@@ -169,9 +180,11 @@ function NavBar() {
           </IconButton>
         </div>
         <div>
-          <Badge color="secondary" badgeContent={2}>
+          <Badge color="secondary" badgeContent={cartItemsNumber}>
             <IconButton>
-              <MailIcon sx={{ height: "42px", width: "42px", margin: -1 }} />
+              <ShoppingCartIcon
+                sx={{ height: "42px", width: "42px", margin: -1 }}
+              />
             </IconButton>
           </Badge>
         </div>

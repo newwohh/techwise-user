@@ -1,7 +1,11 @@
 import { createContext } from "react";
+import { Product } from "../pages/ProductsByCategories";
 
 interface ProductContextType {
-  product: string;
-  setProduct: React.Dispatch<React.SetStateAction<string>>;
+  product: Product[] | undefined | null;
+  pushItemToArray: (item: Product) => void;
 }
-export const ProductContext = createContext<ProductContextType | null>(null);
+export const ProductContext = createContext<ProductContextType>({
+  product: [],
+  pushItemToArray: () => {},
+});

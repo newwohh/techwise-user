@@ -10,6 +10,7 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
+import { NavLink } from "react-router-dom";
 
 function ProfileMenu() {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -83,7 +84,17 @@ function ProfileMenu() {
         anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
       >
         <MenuItem onClick={handleClose}>
-          <Avatar /> Profile
+          <NavLink
+            to="/profile"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              color: "black",
+            }}
+          >
+            <Avatar /> Profile
+          </NavLink>
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <Avatar /> My account

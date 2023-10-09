@@ -9,6 +9,7 @@ function Footer() {
           display: "flex",
           justifyContent: "space-around",
           alignItems: "center",
+          paddingBottom: "70px",
         }}
       >
         <div

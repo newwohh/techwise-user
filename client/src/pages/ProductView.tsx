@@ -2,26 +2,38 @@ import { Button, Select, Typography } from "@mui/material";
 import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 import { useQuery } from "@tanstack/react-query";
+import { ProductContext } from "../context/ProductContext";
+import React from "react";
 
 function ProductView() {
-  const id = secureLocalStorage.getItem("productId");
-  console.log(id);
-  const getProduct = async () => {
+  const { product, pushItemToArray } = React.useContext(ProductContext);
+
+  const id: string | number | boolean | object | null =
+    secureLocalStorage.getItem("productId");
+  const getProduct = async (
+    idProduct: string | number | boolean | object | null
+  ) => {
     const response = await axios.get(
-      `http://localhost:8000/techwise/client/api/product/${id}`
+      `http://localhost:8000/techwise/client/api/product/${idProduct}`
     );
     console.log(response.data);
     return response.data.data;
   };
 
   const { data, isLoading } = useQuery({
-    queryFn: () => getProduct(),
+    queryFn: () => getProduct(id),
     queryKey: ["product"],
   });
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
+
+  const handleSubmit = async () => {
+    const dataNew = data;
+    pushItemToArray(dataNew);
+  };
+  console.log(id, product);
 
   return (
     <div style={{ padding: 70, display: "flex" }}>
@@ -43,7 +55,7 @@ function ProductView() {
           marginLeft: "200px",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
+          justifyContent: "space-evenly",
         }}
       >
         <Typography variant="h3">{data?.name}</Typography>
@@ -61,6 +73,7 @@ function ProductView() {
         </div>
         <Button
           sx={{ padding: "10px", backgroundColor: "black", color: "white" }}
+          onClick={handleSubmit}
         >
           Add to bag
         </Button>

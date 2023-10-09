@@ -9,7 +9,7 @@ function Home() {
   useScrollToTop();
 
   return (
-    <div>
+    <div style={{ paddingLeft: "40px", paddingRight: "40px" }}>
       <header>
         <section>
           <img
@@ -39,7 +39,9 @@ function Home() {
       <main>
         <section style={{ padding: 20, marginTop: "50px" }}>
           <div>
-            <Typography variant="h5">Categories</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 600 }}>
+              Categories
+            </Typography>
           </div>
           <div style={{ marginTop: "50px" }}>
             <CategoriesBar />
@@ -47,7 +49,9 @@ function Home() {
         </section>
         <section style={{ padding: 20, marginTop: "50px" }}>
           <div>
-            <Typography variant="h5">Featured Topics</Typography>
+            <Typography variant="h5" sx={{ fontWeight: 600 }}>
+              Featured Topics
+            </Typography>
           </div>
           <div style={{ marginTop: "50px" }}>
             <Featured />

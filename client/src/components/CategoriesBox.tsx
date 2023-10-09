@@ -14,7 +14,7 @@ function CategoriesBox({ icon, title }: { icon: JSX.Element; title: string }) {
           alignItems: "center",
           textDecoration: "none",
         }}
-        to={`${title}`}
+        to={`category/${title}`}
       >
         <Typography>{icon}</Typography>
         <Typography>{title}</Typography>
