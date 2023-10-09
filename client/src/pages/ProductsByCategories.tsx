@@ -1,4 +1,11 @@
-import { Divider, ListItem, Typography, List } from "@mui/material";
+import {
+  Divider,
+  ListItem,
+  Typography,
+  List,
+  Box,
+  LinearProgress,
+} from "@mui/material";
 import ProductList from "../components/ProductList";
 import image from "../assets/productlistings.jpg";
 import BannerSearch from "../components/BannerSearch";
@@ -58,7 +65,13 @@ function ProductsByCategories() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Box sx={{ width: "100%" }}>
+          <LinearProgress sx={{ color: "black" }} color="inherit" />
+        </Box>
+      </div>
+    );
   }
 
   return (

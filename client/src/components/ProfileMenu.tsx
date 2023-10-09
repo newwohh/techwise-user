@@ -2,7 +2,6 @@ import React from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { Logout, PersonAdd, Settings } from "@mui/icons-material";
 import {
-  Avatar,
   Button,
   Divider,
   ListItemIcon,
@@ -10,6 +9,9 @@ import {
   MenuItem,
   Tooltip,
 } from "@mui/material";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import Person3Icon from "@mui/icons-material/Person3";
+
 import { NavLink } from "react-router-dom";
 
 function ProfileMenu() {
@@ -91,13 +93,25 @@ function ProfileMenu() {
               alignItems: "center",
               textDecoration: "none",
               color: "black",
+              width: "100%",
             }}
           >
-            <Avatar /> Profile
+            <Person3Icon sx={{ mr: "10px" }} /> Profile
           </NavLink>
         </MenuItem>
         <MenuItem onClick={handleClose}>
-          <Avatar /> My account
+          <NavLink
+            to="/profile/cart"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              color: "black",
+              width: "100%",
+            }}
+          >
+            <ShoppingCartIcon sx={{ mr: "10px" }} /> Cart
+          </NavLink>
         </MenuItem>
         <Divider />
         <MenuItem onClick={handleClose}>

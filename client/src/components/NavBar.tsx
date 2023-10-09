@@ -8,6 +8,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import {
   Autocomplete,
   Badge,
+  Button,
+  Fade,
   Stack,
   TextField,
   Typography,
@@ -32,6 +34,17 @@ function NavBar() {
   );
   const [value, setValue] = React.useState<string | null>("");
   const [category, setCategory] = React.useState<string>("");
+  const [errorMessage, setErrorMessage] = React.useState<boolean>(false);
+  const [anchorElCart, setAnchorElCart] = React.useState<null | HTMLElement>(
+    null
+  );
+  const openCart = Boolean(anchorElCart);
+  const handleClickCart = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElCart(event.currentTarget);
+  };
+  const handleCloseCart = () => {
+    setAnchorElCart(null);
+  };
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -61,6 +74,10 @@ function NavBar() {
   };
 
   const viewData = async (value: string | null) => {
+    if (value === "") {
+      return setErrorMessage(true);
+    }
+    setErrorMessage(false);
     setValue(value);
     const productFromResponse: Product | undefined = productByCategory.find(
       (productRes: Product) => {
@@ -70,16 +87,16 @@ function NavBar() {
     if (productFromResponse) {
       getProduct(productFromResponse._id);
     }
-    nav(`/${category}/view/${value}`);
+    nav(`category/${category}/view/${value}`);
   };
 
   const cartItemsNumber: number | undefined = product?.length;
 
-  console.log(product, cartItemsNumber);
+  console.log(value);
 
   return (
     <nav
-      style={{ paddingTop: "80px", paddingLeft: "80px", paddingRight: "80px" }}
+      style={{ paddingTop: "20px", paddingLeft: "80px", paddingRight: "80px" }}
     >
       <div
         style={{
@@ -157,17 +174,34 @@ function NavBar() {
               }}
               options={productByCategory.map((option: Product) => option.name)}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  sx={{ ml: 1, flex: 1 }}
-                  placeholder="Search..."
-                />
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  {errorMessage ? (
+                    <TextField
+                      error
+                      label="Please select a category"
+                      {...params}
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder="Search..."
+                    />
+                  ) : (
+                    <TextField
+                      {...params}
+                      sx={{ ml: 1, flex: 1 }}
+                      placeholder="Search..."
+                    />
+                  )}
+                </div>
               )}
             />
           </Stack>
           <IconButton
             onClick={() => viewData(value)}
             edge="end"
+            id="cart"
+            aria-label="cart"
+            aria-controls={openCart ? "long-menu" : undefined}
+            aria-expanded={openCart ? "true" : undefined}
+            aria-haspopup="true"
             sx={{
               backgroundColor: "black",
               color: "white",
@@ -181,7 +215,13 @@ function NavBar() {
         </div>
         <div>
           <Badge color="secondary" badgeContent={cartItemsNumber}>
-            <IconButton>
+            <IconButton
+              id="fade-button"
+              aria-controls={openCart ? "fade-menu" : undefined}
+              aria-haspopup="true"
+              aria-expanded={openCart ? "true" : undefined}
+              onClick={handleClickCart}
+            >
               <ShoppingCartIcon
                 sx={{ height: "42px", width: "42px", margin: -1 }}
               />
@@ -192,6 +232,62 @@ function NavBar() {
           <ProfileMenu />
         </div>
       </div>
+      <Menu
+        id="fade-menu"
+        MenuListProps={{
+          "aria-labelledby": "fade-button",
+        }}
+        anchorEl={anchorElCart}
+        open={openCart}
+        onClose={handleCloseCart}
+        TransitionComponent={Fade}
+        PaperProps={{
+          style: {
+            maxHeight: ITEM_HEIGHT * 4.5,
+            width: "350px",
+          },
+        }}
+      >
+        {product?.map((product: Product) => (
+          <MenuItem key={product._id}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                width: "100%",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <Typography>{product.name}</Typography>
+              </div>
+              <div>
+                <Typography>${product.price}</Typography>
+              </div>
+            </div>
+          </MenuItem>
+        ))}
+        <MenuItem
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Button
+            sx={{
+              backgroundColor: "black",
+              color: "white",
+              "&:hover": {
+                backgroundColor: "black",
+                color: "white",
+              },
+            }}
+          >
+            Place order
+          </Button>
+        </MenuItem>
+      </Menu>
     </nav>
   );
 }

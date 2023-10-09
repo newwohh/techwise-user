@@ -19,7 +19,7 @@ function Home() {
               width: "100%",
               height: "800px",
               borderRadius: "50px",
-              marginTop: "10px",
+              marginTop: "50px",
               objectFit: "cover",
               userSelect: "none",
               pointerEvents: "none",

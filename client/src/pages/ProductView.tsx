@@ -1,4 +1,4 @@
-import { Button, Select, Typography } from "@mui/material";
+import { Box, Button, LinearProgress, Select, Typography } from "@mui/material";
 import axios from "axios";
 import secureLocalStorage from "react-secure-storage";
 import { useQuery } from "@tanstack/react-query";
@@ -26,7 +26,13 @@ function ProductView() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Box sx={{ width: "100%" }}>
+          <LinearProgress sx={{ color: "black" }} color="inherit" />
+        </Box>
+      </div>
+    );
   }
 
   const handleSubmit = async () => {
