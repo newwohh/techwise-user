@@ -20,12 +20,25 @@ import secureLocalStorage from "react-secure-storage";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ProfileMenu from "./ProfileMenu";
 import { ProductContext } from "../context/ProductContext";
+// import { useSelector } from "react-redux";
+// import { UserObject } from "../store/reducers";
 
 const ITEM_HEIGHT = 48;
 
-const categories = ["Laptop", "Smartphone"];
+const categories: string[] = [
+  "Laptop",
+  "Smartphone",
+  "Camera",
+  "Desktop",
+  "Tablet",
+];
+
+// interface ReduxUser {
+//   user: User;
+// }
 
 function NavBar() {
+  // const currentUser = useSelector((state: { user: UserObject }) => state.user);
   const nav = useNavigate();
   const { product } = React.useContext(ProductContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -87,7 +100,7 @@ function NavBar() {
     if (productFromResponse) {
       getProduct(productFromResponse._id);
     }
-    nav(`category/${category}/view/${value}`);
+    nav(`category/${category}/view/${value?.replaceAll(" ", "-")}`);
   };
 
   const cartItemsNumber: number | undefined = product?.length;

@@ -6,8 +6,6 @@ const capitalize = require("lodash.capitalize");
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
-    required: true,
-    unique: true,
     trim: true,
   },
   email: {
@@ -77,6 +75,30 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: uuidv4,
   },
+  businessType: {
+    type: String,
+    enum: ["Sole Proprietorship", "Partnership", "Corporation", "LLC", "Other"],
+  },
+  businessName: {
+    type: String,
+  },
+  gstRegisteredNumber: {
+    type: String,
+    unique: true,
+    trim: true,
+    uppercase: true,
+  },
+});
+
+userSchema.pre(/save/, function (next) {
+  if (!this.username) {
+    const emailParts = this.email.split("@");
+    const username = `${emailParts[0]}_${uuidv4().substring(0, 8)}`;
+
+    this.username = username;
+  }
+
+  next();
 });
 
 userSchema.pre(/save/, async function (next) {

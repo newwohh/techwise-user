@@ -1,6 +1,6 @@
-import { List, ListItem } from "@mui/material";
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { List, ListItem } from "@mui/material";
+import { NavLink, useLocation } from "react-router-dom";
 
 const allLinkLists = [
   {
@@ -13,11 +13,15 @@ const allLinkLists = [
   },
   {
     title: "Manage Address",
-    link: "/address",
+    link: "address",
   },
 ];
 
 function ProfileDrawer() {
+  const params = useLocation();
+  const path = params.pathname;
+  console.log(params);
+
   return (
     <div style={{ position: "relative", marginBottom: "120px" }}>
       <div
@@ -62,6 +66,10 @@ function ProfileDrawer() {
                       fontFamily: "Helvetica",
                       fontSize: "22px",
                       borderRadius: "20px",
+                      boxShadow:
+                        path === "/profile/" + el.link
+                          ? "rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px"
+                          : "",
                       "&:hover": {
                         boxShadow:
                           "rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px",

@@ -8,13 +8,22 @@ import {
   Menu,
   MenuItem,
   Tooltip,
+  Typography,
 } from "@mui/material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Person3Icon from "@mui/icons-material/Person3";
+import Person2Icon from "@mui/icons-material/Person2";
 
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { UserObject } from "../store/reducers";
+import { logoutUser } from "../store/reducers";
+import axios from "axios";
 
 function ProfileMenu() {
+  const dispatch = useDispatch();
+  const currentUser = useSelector((state: { user: UserObject }) => state.user);
+  console.log(currentUser);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -24,31 +33,57 @@ function ProfileMenu() {
     setAnchorEl(null);
   };
 
+  const handleLogout = async () => {
+    dispatch(logoutUser());
+    const logout = await axios.get(
+      "http://localhost:8000/techwise/client/api/user/logout"
+    );
+    console.log(logout);
+  };
+
   return (
     <div>
       <Tooltip title="Account settings">
-        <Button
-          id="demo-customized-button"
-          aria-controls={open ? "demo-customized-menu" : undefined}
-          aria-haspopup="true"
-          aria-expanded={open ? "true" : undefined}
-          variant="contained"
-          disableElevation
-          onClick={handleClick}
-          endIcon={<KeyboardArrowDownIcon sx={{ color: "black" }} />}
-          sx={{
-            backgroundColor: "white",
-            color: "black",
-            fontSize: "17px",
-            "&:hover": {
-              boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+        {currentUser.user ? (
+          <Button
+            id="demo-customized-button"
+            aria-controls={open ? "demo-customized-menu" : undefined}
+            aria-haspopup="true"
+            aria-expanded={open ? "true" : undefined}
+            variant="contained"
+            disableElevation
+            onClick={handleClick}
+            endIcon={<KeyboardArrowDownIcon sx={{ color: "black" }} />}
+            sx={{
               backgroundColor: "white",
               color: "black",
-            },
-          }}
-        >
-          Profile
-        </Button>
+              fontSize: "17px",
+              "&:hover": {
+                boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                backgroundColor: "white",
+                color: "black",
+              },
+            }}
+          >
+            <Typography>{currentUser.user?.username}</Typography>
+          </Button>
+        ) : (
+          <Button
+            href="/welcome"
+            sx={{
+              backgroundColor: "white",
+              color: "black",
+              fontSize: "17px",
+              "&:hover": {
+                boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px",
+                backgroundColor: "white",
+                color: "black",
+              },
+            }}
+          >
+            <Person2Icon />
+          </Button>
+        )}
       </Tooltip>
       <Menu
         anchorEl={anchorEl}
@@ -126,7 +161,7 @@ function ProfileMenu() {
           </ListItemIcon>
           Settings
         </MenuItem>
-        <MenuItem onClick={handleClose}>
+        <MenuItem onClick={handleLogout}>
           <ListItemIcon>
             <Logout fontSize="small" />
           </ListItemIcon>

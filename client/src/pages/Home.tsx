@@ -4,10 +4,13 @@ import { Typography } from "@mui/material";
 import CategoriesBar from "../components/CategoriesBar";
 import Featured from "../components/Featured";
 import { useScrollToTop } from "./ProductsByCategories";
+// import { useSelector } from "react-redux";
+// import { User } from "../store/reducers";
 
 function Home() {
   useScrollToTop();
-
+  // const currentUser = useSelector((state: { user: User | null }) => state.user);
+  // console.log(currentUser);
   return (
     <div style={{ paddingLeft: "40px", paddingRight: "40px" }}>
       <header>

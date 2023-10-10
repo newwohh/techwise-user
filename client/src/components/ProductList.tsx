@@ -50,7 +50,10 @@ function ProductList({ product }: { product: Product }) {
           justifyContent: "center",
         }}
       >
-        <NavLink to={`view/${product.name}`} style={{ textDecoration: "none" }}>
+        <NavLink
+          to={`view/${product.name.replaceAll(" ", "-")}`}
+          style={{ textDecoration: "none" }}
+        >
           <Button
             sx={{
               padding: "20px",

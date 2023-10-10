@@ -10,6 +10,8 @@ import Profile from "./pages/Profile";
 import Cart from "./pages/Cart";
 import ProfileWrapper from "./components/ProfileWrapper";
 import ManageAddress from "./pages/ManageAddress";
+import SignIn from "./pages/SignIn";
+import Register from "./pages/Register";
 
 function App() {
   const [product, setProduct] = React.useState<Product[]>([
@@ -39,12 +41,22 @@ function App() {
     setProduct((prevArray) => [...prevArray, item]);
   };
 
+  const shouldRenderNavBarAndFooter =
+    !location.pathname.startsWith("/welcome") &&
+    !location.pathname.startsWith("/register");
+
   return (
     <>
       <ProductContext.Provider value={{ product, pushItemToArray }}>
-        <NavBar />
+        {shouldRenderNavBarAndFooter && (
+          <>
+            <NavBar />
+          </>
+        )}
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/welcome" element={<SignIn />} />
           <Route path="/category/:category">
             <Route index element={<ProductsByCategories />} />
             <Route path="view/:id" element={<ProductView />} />
@@ -62,8 +74,12 @@ function App() {
             <Route path="cart" element={<Cart />} />
           </Route>
         </Routes>
+        {shouldRenderNavBarAndFooter && (
+          <>
+            <Footer />
+          </>
+        )}
       </ProductContext.Provider>
-      <Footer />
     </>
   );
 }

@@ -103,15 +103,20 @@ function Profile() {
       <div
         style={{
           display: "flex",
-          justifyContent: "center",
+          justifyContent: "space-between",
           width: "600px",
           marginTop: "40px",
         }}
       >
         {update ? (
-          <TextField placeholder="Address" />
+          <TextField placeholder="Email" />
         ) : (
-          <TextField disabled placeholder="Address" />
+          <TextField disabled placeholder="Email" />
+        )}
+        {update ? (
+          <TextField placeholder="Password" />
+        ) : (
+          <TextField disabled placeholder="Password" />
         )}
       </div>
       <div
