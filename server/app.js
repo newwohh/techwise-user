@@ -29,10 +29,7 @@ app.use(function (req, res, next) {
 });
 
 // routes
-app.get("/", (req, res) => {
-  // No need to send a response here, as the 'express.static' middleware
-  // will serve the 'index.html' file for you.
-});
+app.get("/", (req, res) => {});
 app.use("/techwise/client/api/user", authRouter);
 app.use("/techwise/client/api/product", productRouter);
 

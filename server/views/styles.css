@@ -77,3 +77,22 @@ ul li {
 .highlight {
   color: #1f84b1;
 }
+
+.dark-theme {
+  background-color: #222;
+  color: white;
+}
+
+.theme-button {
+  background-color: #0074e4;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.theme-button:hover {
+  background-color: #0056a9;
+}
