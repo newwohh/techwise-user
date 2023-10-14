@@ -1,9 +1,12 @@
+const path = require("path");
 const express = require("express");
 const cookieParser = require("cookie-parser");
 const authRouter = require("./routes/userRoutes");
 const productRouter = require("./routes/productRoutes");
 
 const app = express();
+
+app.use(express.static(path.join(__dirname, "views")));
 
 app.use(cookieParser());
 app.use(express.json());
@@ -26,6 +29,10 @@ app.use(function (req, res, next) {
 });
 
 // routes
+app.get("/", (req, res) => {
+  // No need to send a response here, as the 'express.static' middleware
+  // will serve the 'index.html' file for you.
+});
 app.use("/techwise/client/api/user", authRouter);
 app.use("/techwise/client/api/product", productRouter);
 
