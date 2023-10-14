@@ -1,206 +1,79 @@
-/* Reset some default browser styles */
-body,
-h1,
-h2,
-h3,
-p {
+/* styles.css */
+body {
+  font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-}
-
-/* Style the header */
-header {
-  background-color: #333;
-  color: #fff;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-#logo img {
-  width: 100px;
-}
-
-#search input {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 5px;
-}
-
-#search button {
-  background-color: #ff6600;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 0.5rem 1rem;
-  margin-left: 1rem;
-  cursor: pointer;
-}
-
-/* Style the main content */
-main {
-  padding: 2rem;
-}
-
-/* Style the hero section */
-#hero {
-  background-color: #ff6600;
-  color: #fff;
-  padding: 2rem;
-  text-align: center;
-}
-
-#hero a {
-  background-color: #333;
-  color: #fff;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  margin-top: 1rem;
-  display: inline-block;
-}
-
-/* Style the categories section */
-#categories ul {
-  list-style: none;
-  display: flex;
-  justify-content: space-around;
-  background-color: #333;
-  padding: 1rem;
-}
-
-#categories a {
-  text-decoration: none;
-  color: #fff;
-  font-weight: bold;
-}
-
-/* Style the featured products section */
-#featured-products {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-}
-
-.product {
-  background-color: #fff;
-  padding: 1rem;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.product h3 {
+  background-color: #f2f2f2;
   color: #333;
 }
 
-.product a {
-  background-color: #ff6600;
-  color: #fff;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  display: block;
-  margin-top: 1rem;
-}
-
-/* Style the discounts section */
-#discounts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2rem;
-}
-
-.discount {
-  background-color: #ff6600;
-  color: #fff;
-  padding: 1rem;
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: #fff;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
   text-align: center;
 }
 
-.discount h3 {
-  font-size: 1.5rem;
-  margin-top: 1rem;
+h1 {
+  font-size: 3em;
+  margin: 0;
 }
 
-.discount p {
-  margin-top: 1rem;
+h2 {
+  font-size: 2.5em;
+  margin: 10px 0;
 }
 
-.discount a {
-  background-color: #333;
+h3 {
+  font-size: 1.8em;
+  margin: 20px 0;
+}
+
+p {
+  font-size: 1.3em;
+  line-height: 1.5;
+  margin: 0 0 20px 0;
+}
+
+ul {
+  text-align: left;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+ul li {
+  font-size: 1.3em;
+  margin: 0 0 10px 0;
+}
+
+.footer {
+  background-color: #155a8a;
   color: #fff;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
-  display: block;
-  margin-top: 1rem;
-}
-
-/* Style the testimonials section */
-#testimonials {
-  background-color: #333;
-  color: #fff;
-  padding: 2rem;
-}
-
-.testimonial p {
-  font-style: italic;
-  margin: 1rem 0;
-}
-
-/* Style the newsletter section */
-#newsletter {
-  background-color: #ff6600;
-  color: #fff;
-  padding: 2rem;
   text-align: center;
+  padding: 10px 0;
+  font-size: 1.3em;
 }
 
-#newsletter form {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
-}
-
-#newsletter input[type="email"] {
-  padding: 0.5rem;
-  border: none;
-  border-radius: 5px;
-}
-
-#newsletter button {
-  background-color: #333;
+.button {
+  background-color: #1f84b1;
   color: #fff;
+  padding: 10px 20px;
   border: none;
-  border-radius: 5px;
-  padding: 0.5rem 1rem;
-  margin-left: 1rem;
   cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: background-color 0.3s;
 }
 
-/* Style the footer */
-footer {
-  background-color: #333;
-  color: #fff;
-  padding: 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.button:hover {
+  background-color: #155a8a;
 }
 
-/* Add responsive design for smaller screens */
-@media (max-width: 768px) {
-  main {
-    padding: 1rem;
-  }
-
-  #featured-products,
-  #discounts {
-    flex-direction: column;
-  }
+.highlight {
+  color: #1f84b1;
 }
-
-/* Additional styling can be added as needed */
