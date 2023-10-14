@@ -4,10 +4,15 @@ import secureLocalStorage from "react-secure-storage";
 import { useQuery } from "@tanstack/react-query";
 import { ProductContext } from "../context/ProductContext";
 import React from "react";
+import { useSelector } from "react-redux";
+import { UserObject } from "../store/reducers";
+import { useNavigate } from "react-router-dom";
 
 function ProductView() {
+  const navigateTo = useNavigate();
   const { product, pushItemToArray } = React.useContext(ProductContext);
-
+  const { user } = useSelector((state: { user: UserObject }) => state.user);
+  console.log(user);
   const id: string | number | boolean | object | null =
     secureLocalStorage.getItem("productId");
   const getProduct = async (
@@ -36,8 +41,12 @@ function ProductView() {
   }
 
   const handleSubmit = async () => {
-    const dataNew = data;
-    pushItemToArray(dataNew);
+    if (user) {
+      const dataNew = data;
+      pushItemToArray(dataNew);
+    } else {
+      navigateTo("/welcome");
+    }
   };
   console.log(id, product);
 

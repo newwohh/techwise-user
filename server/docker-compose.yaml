@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  techwise-user:
+    image: techwise-user
+    build:
+      context: .
+    env_file:
+      - ./config/config.env
+    environment:
+      - PORT=${PORT}
+      - DATABASE=${DATABASE}
+      - DATABASE_URL=${DATABASE_URL}
+    ports:
+      - 4001:8000

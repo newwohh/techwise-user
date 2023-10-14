@@ -1,3 +1,4 @@
+process.setMaxListeners(50);
 const path = require("path");
 const express = require("express");
 const cookieParser = require("cookie-parser");
