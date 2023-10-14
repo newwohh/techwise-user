@@ -6,6 +6,8 @@ const productRouter = require("./routes/productRoutes");
 
 const app = express();
 
+app.set("view engine", "pug");
+app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "views")));
 
 app.use(cookieParser());
@@ -29,7 +31,9 @@ app.use(function (req, res, next) {
 });
 
 // routes
-app.get("/", (req, res) => {});
+app.get("/", (req, res) => {
+  res.render("index");
+});
 app.use("/techwise/client/api/user", authRouter);
 app.use("/techwise/client/api/product", productRouter);
 
