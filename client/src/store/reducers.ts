@@ -11,11 +11,11 @@ export interface User {
   password: string;
   passwordConfirm: string;
   fullName: string;
-  dateOfBirth?: string; // Assuming it's stored as a string in a suitable format
+  dateOfBirth?: string;
   profilePicture?: string;
   phoneNumber?: string;
   addresses: Address[];
-  orders: string[]; // Assuming order IDs are stored as strings
+  orders: string[];
   paymentMethods: PaymentMethod[];
   age?: number;
   uniqueId: string;

@@ -4,6 +4,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const authRouter = require("./routes/userRoutes");
 const productRouter = require("./routes/productRoutes");
+const paymentRouter = require("./routes/paymentRoutes");
 
 const app = express();
 
@@ -37,5 +38,6 @@ app.get("/", (req, res) => {
 });
 app.use("/techwise/client/api/user", authRouter);
 app.use("/techwise/client/api/product", productRouter);
+app.use("/techwise/client/api/payment", paymentRouter);
 
 module.exports = app;

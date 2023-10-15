@@ -73,6 +73,95 @@ exports.loginUser = async (req, res) => {
   }
 };
 
+exports.updateUser = async (req, res) => {
+  console.log(req.body);
+  try {
+    const id = req.body.id;
+    const { email, mobile } = req.body;
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      { fullName: req.body.name, phoneNumber: mobile, email },
+      { new: true }
+    );
+
+    if (updatedUser) {
+      return res.json({
+        status: "success",
+        updatedUser,
+      });
+    }
+
+    return res.status(404).json({
+      status: "not found",
+      message: "User not found",
+    });
+  } catch (error) {
+    return res.status(500).send(error.message);
+  }
+};
+
+exports.addAddress = async (req, res) => {
+  console.log(req.body);
+  try {
+    const id = req.body.id;
+    const { addressLine1, city, postalCode, country } = req.body;
+    if (!addressLine1 || !city || !postalCode || !country) {
+      return res.status(400).json({ error: "Missing required data." });
+    }
+    const createAddress = await User.findByIdAndUpdate(
+      id,
+      {
+        $push: {
+          addresses: {
+            addressLine1: addressLine1,
+            addressLine2: req.body.addressLine2,
+            city: city,
+            postalCode: postalCode,
+            country: country,
+          },
+        },
+      },
+      { new: true }
+    );
+
+    if (createAddress) {
+      return res.json({
+        status: "success",
+        createAddress,
+      });
+    } else {
+      return res.status(404).json({ error: "User not found." });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+exports.removeAddress = async (req, res) => {
+  try {
+    const userId = req.body.id;
+    const addressId = req.body.addressId;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $pull: { addresses: { _id: addressId } } },
+      { new: true }
+    );
+
+    if (updatedUser) {
+      return res.json({
+        status: "success",
+        user: updatedUser,
+      });
+    } else {
+      return res.status(404).json({ error: "User not found." });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
+};
+
 exports.logout = (req, res) => {
   res.cookie("jwt", "loggedout", {
     expires: new Date(Date.now() + 10 * 1000),

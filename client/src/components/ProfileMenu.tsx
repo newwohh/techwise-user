@@ -1,6 +1,6 @@
-import React from "react";
+import React, { Dispatch } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import { Logout, PersonAdd, Settings } from "@mui/icons-material";
+import { Logout, Settings } from "@mui/icons-material";
 import {
   Button,
   Divider,
@@ -13,27 +13,29 @@ import {
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import Person3Icon from "@mui/icons-material/Person3";
 import Person2Icon from "@mui/icons-material/Person2";
-
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { UserObject } from "../store/reducers";
 import { logoutUser } from "../store/reducers";
 import axios from "axios";
+import { AnyAction } from "redux";
 
 function ProfileMenu() {
-  const dispatch = useDispatch();
-  const currentUser = useSelector((state: { user: UserObject }) => state.user);
+  const dispatch: Dispatch<AnyAction> = useDispatch();
+  const currentUser: UserObject = useSelector(
+    (state: { user: UserObject }) => state.user
+  );
   console.log(currentUser);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
+  const open: boolean = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
+  const handleClose: () => void = () => {
     setAnchorEl(null);
   };
 
-  const handleLogout = async () => {
+  const handleLogout: () => Promise<void> = async () => {
     dispatch(logoutUser());
     const logout = await axios.get(
       "http://localhost:8000/techwise/client/api/user/logout"
@@ -127,8 +129,8 @@ function ProfileMenu() {
               display: "flex",
               alignItems: "center",
               textDecoration: "none",
-              color: "black",
               width: "100%",
+              color: "grey",
             }}
           >
             <Person3Icon sx={{ mr: "10px" }} /> Profile
@@ -141,20 +143,28 @@ function ProfileMenu() {
               display: "flex",
               alignItems: "center",
               textDecoration: "none",
-              color: "black",
+              color: "grey",
               width: "100%",
             }}
           >
             <ShoppingCartIcon sx={{ mr: "10px" }} /> Cart
           </NavLink>
         </MenuItem>
-        <Divider />
         <MenuItem onClick={handleClose}>
-          <ListItemIcon>
-            <PersonAdd fontSize="small" />
-          </ListItemIcon>
-          Add another account
+          <NavLink
+            to="/profile/cart"
+            style={{
+              display: "flex",
+              alignItems: "center",
+              textDecoration: "none",
+              color: "grey",
+              width: "100%",
+            }}
+          >
+            <ShoppingCartIcon sx={{ mr: "10px" }} /> Become a Plus member
+          </NavLink>
         </MenuItem>
+        <Divider />
         <MenuItem onClick={handleClose}>
           <ListItemIcon>
             <Settings fontSize="small" />

@@ -8,15 +8,41 @@ import {
   RadioGroup,
   TextField,
 } from "@mui/material";
+import { useSelector } from "react-redux";
+import { UserObject } from "../store/reducers";
+import axios from "axios";
 
 function Profile() {
+  const currentUser: UserObject = useSelector(
+    (state: { user: UserObject }) => state.user
+  );
+  const [updateUser, setUpdateUser] = React.useState({
+    id: currentUser.user?._id,
+    name: currentUser.user?.fullName,
+    email: currentUser.user?.email,
+    mobile: currentUser.user?.phoneNumber,
+    username: currentUser.user?.username,
+  });
   const [value, setValue] = React.useState("female");
   const [update, setUpdate] = React.useState(false);
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue((event.target as HTMLInputElement).value);
   };
 
-  console.log(value);
+  const upadteUserHandler = async () => {
+    try {
+      const request = await axios.post(
+        "http://localhost:8000/techwise/client/api/user/update",
+        updateUser
+      );
+
+      console.log(request.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  console.log(value, currentUser.user?.fullName.split(" ")[0]);
 
   return (
     <div
@@ -37,14 +63,28 @@ function Profile() {
         }}
       >
         {update ? (
-          <TextField placeholder="Firstname" />
+          <TextField
+            onChange={(e) =>
+              setUpdateUser({
+                ...updateUser,
+                name: e.target.value,
+              })
+            }
+          />
         ) : (
-          <TextField disabled placeholder="Firstname" />
+          <TextField disabled placeholder={currentUser.user?.fullName} />
         )}
         {update ? (
-          <TextField placeholder="Lastname" />
+          <TextField
+            onChange={(e) =>
+              setUpdateUser({
+                ...updateUser,
+                username: e.target.value,
+              })
+            }
+          />
         ) : (
-          <TextField disabled placeholder="Lastname" />
+          <TextField disabled placeholder={currentUser.user?.username} />
         )}
       </div>
       <div style={{ display: "flex", marginTop: "40px" }}>
@@ -111,7 +151,7 @@ function Profile() {
         {update ? (
           <TextField placeholder="Email" />
         ) : (
-          <TextField disabled placeholder="Email" />
+          <TextField disabled placeholder={currentUser.user?.email} />
         )}
         {update ? (
           <TextField placeholder="Password" />
@@ -130,7 +170,7 @@ function Profile() {
         {update ? (
           <TextField placeholder="Mobile Number" />
         ) : (
-          <TextField disabled placeholder="Mobile Number" />
+          <TextField disabled placeholder={currentUser.user?.phoneNumber} />
         )}
       </div>
       <div
@@ -170,7 +210,7 @@ function Profile() {
                 border: "2px solid black",
               },
             }}
-            onClick={() => setUpdate(!update)}
+            onClick={() => upadteUserHandler()}
           >
             Update
           </Button>
