@@ -33,20 +33,21 @@ exports.createOrder = async (req, res) => {
   }
 };
 
-// exports.verifyData = catchAsync(async (req, res, next, data) => {
-//   const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
-//     req.body;
+exports.verifyData = async (req, res, next, data) => {
+  console.log(req.body);
+  // const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
+  //   req.body;
 
-//   const sign = razorpay_order_id + "|" + razorpay_payment_id;
+  // const sign = razorpay_order_id + "|" + razorpay_payment_id;
 
-//   const expectedSign = crypto
-//     .createHmac("sha356", "Pc1D3Fzc9uunGwCSOFraEibEi")
-//     .update(sign.toString())
-//     .digest("hex");
+  // const expectedSign = crypto
+  //   .createHmac("sha356", "Pc1D3Fzc9uunGwCSOFraEibEi")
+  //   .update(sign.toString())
+  //   .digest("hex");
 
-//   if (razorpay_signature === expectedSign) {
-//     return res.status(200).json({ message: "success" });
-//   } else {
-//     return res.status(400).json({ message: "failed" });
-//   }
-// });
+  // if (razorpay_signature === expectedSign) {
+  //   return res.status(200).json({ message: "success" });
+  // } else {
+  //   return res.status(400).json({ message: "failed" });
+  // }
+};

@@ -15,6 +15,10 @@ const allLinkLists = [
     title: "Manage Address",
     link: "address",
   },
+  {
+    title: "Orders",
+    link: "orders",
+  },
 ];
 
 function ProfileDrawer() {

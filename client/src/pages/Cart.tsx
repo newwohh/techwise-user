@@ -2,9 +2,15 @@ import { Button, List, ListItem, Typography } from "@mui/material";
 import React from "react";
 import { ProductContext } from "../context/ProductContext";
 import { Product } from "./ProductsByCategories";
+import { createPayment } from "../api";
+import { UserObject } from "../store/reducers";
+import { useSelector } from "react-redux";
 
 function Cart() {
   const { product } = React.useContext(ProductContext);
+  const currentUser: UserObject = useSelector(
+    (state: { user: UserObject }) => state.user
+  );
   const prices = product?.map((el: Product) => {
     return el.price;
   });
@@ -16,6 +22,20 @@ function Cart() {
   );
 
   const products = product?.slice(1);
+
+  const orderModelData = products?.map((el) => {
+    return { product: el._id, quantity: el.quantity, price: el.price };
+  });
+
+  const orderData = {
+    user: currentUser.user?._id,
+    products: orderModelData,
+    address: currentUser.user?.addresses[0],
+    totalAmount: Total,
+  };
+
+  console.log(orderData, orderModelData);
+
   return (
     <div
       style={{
@@ -43,6 +63,7 @@ function Cart() {
                   <div style={{ marginLeft: "30px" }}>
                     <Typography>{el.name}</Typography>
                     <Typography>${el.price}</Typography>
+                    <Typography>Quantity: {el.quantity}</Typography>
                   </div>
                 </ListItem>
               );
@@ -75,6 +96,7 @@ function Cart() {
                   width: "250px",
                   "&:hover": { backgroundColor: "black", color: "white" },
                 }}
+                onClick={() => createPayment(orderData)}
               >
                 Place order
               </Button>

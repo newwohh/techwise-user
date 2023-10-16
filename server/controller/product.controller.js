@@ -114,35 +114,3 @@ exports.getProduct = async (req, res) => {
     });
   }
 };
-
-// exports.getProductsByCategory = async (req, res) => {
-//   try {
-//     const { categoryName } = req.params;
-
-//     const products = await Product.aggregate([
-//       {
-//         $match: { category: categoryName }, // Match products with the specified category name
-//       },
-//       {
-//         $project: {
-//           _id: 1,
-//           name: 1,
-//           description: 1,
-//           price: 1,
-//           category: 1,
-//         },
-//       },
-//     ]);
-
-//     res.status(200).json({
-//       success: true,
-//       data: products,
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({
-//       success: false,
-//       message: "Error fetching products by category",
-//     });
-//   }
-// };

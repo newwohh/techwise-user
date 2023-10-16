@@ -34,6 +34,7 @@ function App() {
       reviews: [],
       images: [],
       __v: 0,
+      quantity: "",
     },
   ]);
 

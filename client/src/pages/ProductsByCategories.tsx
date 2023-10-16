@@ -38,6 +38,7 @@ export type Product = {
   }>;
   images: string[];
   __v: number;
+  quantity?: string;
 };
 
 export const useScrollToTop = () => {

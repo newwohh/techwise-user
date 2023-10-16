@@ -1,27 +1,38 @@
 import axios from "axios";
 
+const placeOrder = async (data) => {
+  console.log(data);
+  const response = await axios.post(
+    "http://localhost:8000/techwise/client/api/order/create",
+    data
+  );
+  console.log(response.data);
+};
+
 export const initPayment = async (data) => {
-  console.log(window);
   const options = {
     key: "rzp_test_aQprQUbu7mdh26",
-    amount: 12333,
-    currency: "INR",
-    name: data.name,
+    amount: data.amount.toString(),
+    currency: data.currency,
+    name: "Techwise",
     description: "Test Transaction",
-    image: data.img,
+    image: "ing",
     order_id: data.id,
-    handler: async () => {
-      try {
-        const request = axios.post(
-          "http://localhost:8000/techwise/client/api/payment/order/verifyData",
-          {
-            razorpay_order_id: data.id,
-          }
-        );
-        console.log(request);
-      } catch (error) {
-        console.log(error);
-      }
+    handler: async function (response) {
+      console.log(response);
+      const dataReq = {
+        orderCreationId: data.id,
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature,
+      };
+
+      const request = await axios.post(
+        "http://localhost:8000/techwise/client/api/payment/verify",
+        dataReq,
+        { withCredentials: true }
+      );
+      console.log(request);
     },
     theme: {
       color: "#3399cc",
@@ -32,20 +43,29 @@ export const initPayment = async (data) => {
   rzpi.open();
 };
 
-export const createPayment = async () => {
+export const createPayment = async (data) => {
   try {
-    const request = await axios.post(
+    const request = await fetch(
       "http://localhost:8000/techwise/client/api/payment/order",
       {
-        amount: 1222,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: 100000,
+        }),
+        credentials: "include",
       }
     );
 
-    console.log(request.data);
-    if (request.data.id) {
-      initPayment(request.data);
+    const response = await request.json();
+    console.log(response);
+    if (response.id) {
+      // initPayment(response);
+      placeOrder(data);
     }
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
