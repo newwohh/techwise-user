@@ -12,6 +12,7 @@ import ProfileWrapper from "./components/ProfileWrapper";
 import ManageAddress from "./pages/ManageAddress";
 import SignIn from "./pages/SignIn";
 import Register from "./pages/Register";
+import Orders from "./pages/Orders";
 
 function App() {
   const [product, setProduct] = React.useState<Product[]>([
@@ -73,6 +74,7 @@ function App() {
             <Route index element={<Profile />} />
             <Route path="address" element={<ManageAddress />} />
             <Route path="cart" element={<Cart />} />
+            <Route path="orders" element={<Orders />} />
           </Route>
         </Routes>
         {shouldRenderNavBarAndFooter && (

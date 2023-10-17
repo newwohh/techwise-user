@@ -1,12 +1,15 @@
 import {
   Box,
   Button,
+  Divider,
   LinearProgress,
   MenuItem,
   Select,
   SelectChangeEvent,
+  Snackbar,
   Typography,
 } from "@mui/material";
+import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import axios, { AxiosResponse } from "axios";
 import secureLocalStorage from "react-secure-storage";
 import { useQuery } from "@tanstack/react-query";
@@ -16,14 +19,40 @@ import { useSelector } from "react-redux";
 import { UserObject } from "../store/reducers";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { Product } from "./ProductsByCategories";
+import errorSound from "../assets/error-sounds.mp3";
+import useSound from "use-sound";
+import Reviews from "../components/Reviews";
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
+  props,
+  ref
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 function ProductView() {
+  const [play] = useSound(errorSound);
   const navigateTo: NavigateFunction = useNavigate();
   const { product, pushItemToArray } = React.useContext(ProductContext);
   const [qtyError, setQtyError] = React.useState<boolean>(false);
   const [unit, setUnit] = React.useState<string | undefined>();
   const { user } = useSelector((state: { user: UserObject }) => state.user);
-  console.log(user);
+  const [open, setOpen] = React.useState(false);
+
+  const handleClick = () => {
+    setOpen(true);
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+
+    setOpen(false);
+  };
   const id: string | number | boolean | object | null =
     secureLocalStorage.getItem("productId");
   const getProduct = async (
@@ -57,7 +86,7 @@ function ProductView() {
     setUnit(event.target.value as string);
   };
 
-  const handleSubmit: () => Promise<void | boolean> = async () => {
+  const handleSubmit = async () => {
     if (user) {
       data.quantity = unit;
       const dataNew: Product = data;
@@ -71,7 +100,8 @@ function ProductView() {
       });
 
       if (isInCart) {
-        window.alert("Item is already in cart");
+        handleClick();
+        play();
       } else {
         pushItemToArray(dataNew);
       }
@@ -82,50 +112,65 @@ function ProductView() {
   console.log(id, product, unit);
 
   return (
-    <div style={{ padding: 70, display: "flex" }}>
-      <div style={{ display: "flex", flexDirection: "column" }}>
-        {data?.images.map((el: string, i: number) => {
-          return (
-            <img key={i} style={{ height: "150px", width: "150px" }} src={el} />
-          );
-        })}
-      </div>
-      <div>
-        <img
-          style={{ height: "750px", width: "850px" }}
-          src={data?.images[1]}
-        />
-      </div>
-      <div
-        style={{
-          marginLeft: "200px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-evenly",
-        }}
-      >
-        <Typography variant="h3">{data?.name}</Typography>
-        <Typography sx={{ fontWeight: "bold" }}>{data?.price}</Typography>
-        <Typography>{data?.description}</Typography>
-        <div>
-          <Typography>Quantity</Typography>
-          <Select sx={{ width: "100%" }} value={unit} onChange={handleChange}>
-            <MenuItem value={1000}>1000 units</MenuItem>
-            <MenuItem value={2000}>2000 units</MenuItem>
-            <MenuItem value={5000}>5000 units</MenuItem>
-          </Select>
-          {qtyError && (
-            <Typography sx={{ color: "red" }}>
-              *Please select a quantity
-            </Typography>
-          )}
+    <div>
+      <div style={{ padding: 70, display: "flex" }}>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          {data?.images.map((el: string, i: number) => {
+            return (
+              <img
+                key={i}
+                style={{ height: "150px", width: "150px" }}
+                src={el}
+              />
+            );
+          })}
         </div>
-        <Button
-          sx={{ padding: "10px", backgroundColor: "black", color: "white" }}
-          onClick={handleSubmit}
+        <div>
+          <img
+            style={{ height: "750px", width: "850px" }}
+            src={data?.images[1]}
+          />
+        </div>
+        <div
+          style={{
+            marginLeft: "200px",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-evenly",
+          }}
         >
-          Add to bag
-        </Button>
+          <Typography variant="h3">{data?.name}</Typography>
+          <Typography sx={{ fontWeight: "bold" }}>{data?.price}</Typography>
+          <Typography>{data?.description}</Typography>
+          <div>
+            <Typography>Quantity</Typography>
+            <Select sx={{ width: "100%" }} value={unit} onChange={handleChange}>
+              <MenuItem value={1000}>1000 units</MenuItem>
+              <MenuItem value={2000}>2000 units</MenuItem>
+              <MenuItem value={5000}>5000 units</MenuItem>
+            </Select>
+            {qtyError && (
+              <Typography sx={{ color: "red" }}>
+                *Please select a quantity
+              </Typography>
+            )}
+          </div>
+          <Button
+            sx={{ padding: "10px", backgroundColor: "black", color: "white" }}
+            onClick={handleSubmit}
+          >
+            Add to bag
+          </Button>
+        </div>
+        <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>
+            Product is already in your cart
+          </Alert>
+        </Snackbar>
+      </div>
+      <Divider />
+      <div style={{ padding: "100px" }}>
+        <Reviews data={data} />
       </div>
     </div>
   );

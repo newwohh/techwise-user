@@ -31,7 +31,10 @@ export type Product = {
   availability: boolean;
   seller: string;
   reviews: Array<{
-    user: string; // Assuming user ID is a string
+    user: {
+      _id: string;
+      fullName: string;
+    };
     rating: number;
     comment?: string;
     date: Date;
@@ -39,6 +42,7 @@ export type Product = {
   images: string[];
   __v: number;
   quantity?: string;
+  averageRating?: number;
 };
 
 export const useScrollToTop = () => {
