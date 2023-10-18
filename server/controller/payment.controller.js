@@ -1,5 +1,4 @@
-const Razorpay = require("razorpay");
-// const instance = require("../utils/razorpay");
+const instance = require("../utils/razorpay");
 const crypto = require("crypto");
 
 exports.createOrder = async (req, res) => {
@@ -11,11 +10,6 @@ exports.createOrder = async (req, res) => {
       currency: "INR",
       receipt: crypto.randomBytes(10).toString("hex"),
     };
-
-    const instance = new Razorpay({
-      key_id: "rzp_test_aQprQUbu7mdh26",
-      key_secret: "Pc1D3Fzc9uunGwCSOFraEibE",
-    });
 
     instance.orders.create(options, async (err, order) => {
       if (err) {

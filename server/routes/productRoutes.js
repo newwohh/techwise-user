@@ -10,5 +10,6 @@ productRouter.get(
   productController.getProductsByCategory
 );
 productRouter.get("/categories", productController.getProductsByCategory);
+productRouter.post("/:productId/reviews", productController.addReview);
 
 module.exports = productRouter;

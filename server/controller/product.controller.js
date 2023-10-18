@@ -93,14 +93,20 @@ exports.getProduct = async (req, res) => {
       });
     }
 
-    const product = await Product.findById(id);
+    const productFromModel = await Product.findById(id).populate({
+      path: "reviews.user",
+      select: "fullName",
+    });
 
-    if (!product) {
+    if (!productFromModel) {
       return res.status(400).json({
         success: false,
         error: "Product not found",
       });
     }
+
+    const product = productFromModel.toObject();
+    product.averageRating = productFromModel.averageRating;
 
     res.status(200).json({
       success: true,
@@ -111,6 +117,43 @@ exports.getProduct = async (req, res) => {
     res.status(500).json({
       success: false,
       error: "Server Error",
+    });
+  }
+};
+
+exports.addReview = async (req, res) => {
+  try {
+    const productId = req.params.productId;
+    const { rating, comment, user } = req.body;
+
+    const reviewAddedProduct = await Product.findByIdAndUpdate(
+      productId,
+      {
+        $push: {
+          reviews: [
+            {
+              user,
+              rating,
+              comment,
+            },
+          ],
+        },
+      },
+      { new: true }
+    );
+
+    if (!reviewAddedProduct) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    await reviewAddedProduct.save();
+
+    return res
+      .status(201)
+      .json({ message: "Review added successfully", data: reviewAddedProduct });
+  } catch (error) {
+    res.status(200).json({
+      message: "failed",
     });
   }
 };

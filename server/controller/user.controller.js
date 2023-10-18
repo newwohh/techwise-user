@@ -1,5 +1,6 @@
 const User = require("../models/userModel");
 const jwt = require("jsonwebtoken");
+const { cloudinary, opts } = require("../utils/cloudinary");
 
 const createToken = (id, res) => {
   const token = jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -97,6 +98,46 @@ exports.updateUser = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).send(error.message);
+  }
+};
+
+exports.uploadProfilePic = async (req, res) => {
+  try {
+    const _id = req.body.user;
+    const uploadImage = async (image) => {
+      const upload = await cloudinary.uploader.upload(
+        image,
+        opts,
+        (error, result) => {
+          if (result && result.secure_url) {
+            console.log(result);
+            return result.secure_url;
+          }
+          if (error) {
+            console.log(error);
+          }
+        }
+      );
+      return upload;
+    };
+
+    const img = await uploadImage(req.body.image);
+    const updateProfilePicUrl = await User.findByIdAndUpdate(_id, {
+      profilePicture: img.secure_url,
+    });
+
+    if (updateProfilePicUrl) {
+      return res.status(200).json({
+        status: "success",
+        img: img.secure_url,
+        user: updateProfilePicUrl,
+      });
+    } else {
+      return res.status(404).json({ error: "User not found." });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send(error.message);
   }
 };
 
