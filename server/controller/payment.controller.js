@@ -1,6 +1,5 @@
-const instance = require("../utils/razorpay");
 const crypto = require("crypto");
-
+const { instance } = require("../utils/razorpay");
 exports.createOrder = async (req, res) => {
   console.log(req.body);
 

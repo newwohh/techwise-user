@@ -15,6 +15,11 @@ const userSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
+  gender: {
+    type: String,
+    required: true,
+    enum: ["Male", "Female", "Other"],
+  },
   password: {
     type: String,
     required: true,
@@ -75,15 +80,23 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: uuidv4,
   },
+  position: {
+    type: String,
+    required: true,
+    enum: ["CEO", "CFO", "CTO", "Manager", "Supervisor", "Employee", "Other"],
+  },
   businessType: {
     type: String,
+    required: true,
     enum: ["Sole Proprietorship", "Partnership", "Corporation", "LLC", "Other"],
   },
   businessName: {
     type: String,
+    required: true,
   },
   gstRegisteredNumber: {
     type: String,
+    required: true,
     unique: true,
     trim: true,
     uppercase: true,
