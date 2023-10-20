@@ -13,8 +13,13 @@ exports.createOrder = async (req, res, next) => {
       orderDate: new Date(),
     };
 
-    console.log(orderDetails);
+    if (!orderDetails) {
+      return res.status(500).send("failed");
+    }
 
+    if (!orderDetails.products || !orderDetails.user) {
+      return res.status(500).send("failed");
+    }
     const createOrderNew = await Order.create(orderDetails);
 
     if (createOrderNew) {
@@ -22,6 +27,8 @@ exports.createOrder = async (req, res, next) => {
         status: "success",
         data: createOrderNew,
       });
+    } else {
+      res.status(500).send("failed");
     }
   } catch (error) {
     console.log(error.message);
@@ -31,7 +38,6 @@ exports.createOrder = async (req, res, next) => {
 exports.cancelOrder = async (req, res, next) => {
   try {
     const orderId = req.body.orderId;
-
     const cancelledOrder = await Order.findByIdAndUpdate(orderId, {
       status: "Cancelled",
     });
@@ -61,7 +67,7 @@ exports.trendingProducts = async (req, res) => {
         },
       },
       { $sort: { totalQuantitySold: -1 } },
-      { $limit: 10 },
+      { $limit: 4 },
     ]);
 
     const topSoldProducts = [];

@@ -203,6 +203,28 @@ exports.removeAddress = async (req, res) => {
   }
 };
 
+exports.becomePlus = async (req, res) => {
+  try {
+    const id = req.body.id;
+
+    const plusUser = await User.findByIdAndUpdate(id, {
+      isPlusMember: true,
+    });
+
+    if (plusUser) {
+      return res.json({
+        status: "success",
+        user: plusUser,
+      });
+    } else {
+      return res.status(404).json({ error: "User not found." });
+    }
+  } catch (error) {
+    res.status(500).send("failed");
+    console.log(error.message);
+  }
+};
+
 exports.logout = (req, res) => {
   res.cookie("jwt", "loggedout", {
     expires: new Date(Date.now() + 10 * 1000),

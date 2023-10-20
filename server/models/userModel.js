@@ -101,6 +101,10 @@ const userSchema = new mongoose.Schema({
     trim: true,
     uppercase: true,
   },
+  isPlusMember: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 userSchema.pre(/save/, function (next) {
