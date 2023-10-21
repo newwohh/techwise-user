@@ -25,6 +25,7 @@ export interface User {
 }
 
 interface Address {
+  _id: string;
   addressLine1: string;
   addressLine2: string;
   city: string;

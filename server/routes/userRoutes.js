@@ -7,7 +7,7 @@ authRouter.post("/login", userController.loginUser);
 authRouter.post("/signup", userController.createUser);
 authRouter.post("/update", userController.updateUser);
 authRouter.put("/addAddress", userController.addAddress);
-authRouter.delete("/removeAddress", userController.removeAddress);
+authRouter.put("/removeAddress", userController.removeAddress);
 authRouter.post("/updateProfilePic", userController.uploadProfilePic);
 authRouter.post("/becomePlus", userController.becomePlus);
 

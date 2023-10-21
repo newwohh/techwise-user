@@ -1,7 +1,8 @@
-import { Box, Button, Modal, Typography } from "@mui/material";
+import { Box, Button, Modal, TextField, Typography } from "@mui/material";
 import React from "react";
-import { UserObject } from "../store/reducers";
-import { useSelector } from "react-redux";
+import { UserObject, setUserObject } from "../store/reducers";
+import { useDispatch, useSelector } from "react-redux";
+import axios from "axios";
 
 const style = {
   position: "absolute",
@@ -12,16 +13,60 @@ const style = {
   bgcolor: "background.paper",
   boxShadow: 24,
   borderRadius: "20px",
-  p: 4,
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "space-evenly",
+  flexDirection: "column",
+  padding: "60px",
 };
 
 function ManageAddress() {
+  const dispatch = useDispatch();
   const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   const currentUser: UserObject = useSelector(
     (state: { user: UserObject }) => state.user
   );
+  const [address, setAddress] = React.useState({
+    id: currentUser.user?._id,
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    postalCode: "",
+    country: "",
+  });
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
+  const addAddressHandler = async () => {
+    const response = await axios.put(
+      "http://localhost:8000/techwise/client/api/user/addAddress",
+      address
+    );
+
+    console.log(response.data);
+    const data = response.data.createAddress;
+    if (response.data.createAddress) {
+      dispatch(setUserObject(data));
+    }
+  };
+
+  const removeAddressHandler = async (id: string) => {
+    const response = await axios.put(
+      "http://localhost:8000/techwise/client/api/user/removeAddress",
+      {
+        addressId: id,
+        id: currentUser.user?._id,
+      }
+    );
+
+    console.log(response.data);
+    const data = response.data.user;
+    if (response.data.user) {
+      dispatch(setUserObject(data));
+    }
+  };
+
+  console.log(address);
 
   return (
     <div
@@ -63,7 +108,12 @@ function ManageAddress() {
               <Typography>{el.state}</Typography>
               <div style={{ display: "flex" }}>
                 <Button>Edit</Button>
-                <Button sx={{ color: "red" }}>Delete</Button>
+                <Button
+                  sx={{ color: "red" }}
+                  onClick={() => removeAddressHandler(el._id)}
+                >
+                  Delete
+                </Button>
               </div>
             </div>
           );
@@ -90,12 +140,35 @@ function ManageAddress() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-          </Typography>
+          <TextField
+            value={address.addressLine1}
+            onChange={(e) =>
+              setAddress({ ...address, addressLine1: e.target.value })
+            }
+          />
+          <TextField
+            value={address.addressLine2}
+            onChange={(e) =>
+              setAddress({ ...address, addressLine2: e.target.value })
+            }
+          />
+          <TextField
+            value={address.city}
+            onChange={(e) => setAddress({ ...address, city: e.target.value })}
+          />
+          <TextField
+            value={address.postalCode}
+            onChange={(e) =>
+              setAddress({ ...address, postalCode: e.target.value })
+            }
+          />
+          <TextField
+            value={address.country}
+            onChange={(e) =>
+              setAddress({ ...address, country: e.target.value })
+            }
+          />
+          <Button onClick={addAddressHandler}>Submit</Button>
         </Box>
       </Modal>
     </div>
