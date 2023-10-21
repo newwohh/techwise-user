@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const placeOrder = async (data) => {
+export const placeOrder = async (data) => {
   console.log(data);
   const response = await axios.post(
     "http://localhost:8000/techwise/client/api/order/create",
@@ -41,31 +41,4 @@ export const initPayment = async (data) => {
 
   const rzpi = new window.Razorpay(options);
   rzpi.open();
-};
-
-export const createPayment = async (data) => {
-  try {
-    const request = await fetch(
-      "http://localhost:8000/techwise/client/api/payment/order",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: 100000,
-        }),
-        credentials: "include",
-      }
-    );
-
-    const response = await request.json();
-    console.log(response);
-    if (response.id) {
-      // initPayment(response);
-      placeOrder(data);
-    }
-  } catch (error) {
-    console.log(error.message);
-  }
 };

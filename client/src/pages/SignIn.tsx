@@ -12,6 +12,7 @@ import { useDispatch } from "react-redux";
 import { setUserObject } from "../store/reducers";
 
 function SignIn() {
+  const [loadingText, setLoadingText] = React.useState(false);
   const navigateTo = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = React.useState(false);
@@ -31,27 +32,34 @@ function SignIn() {
   }
 
   const handleSubmit = async () => {
-    if (!isCredentialsValid(user.email, user.password)) {
-      setError(false);
-      return;
-    } else {
-      setLoading(true);
-      setError(true);
-      const response = await axios.post(
-        "http://localhost:8000/techwise/client/api/user/login",
-        user,
-        {
-          withCredentials: true,
+    try {
+      if (!isCredentialsValid(user.email, user.password)) {
+        setError(false);
+        return;
+      } else {
+        setLoading(true);
+        setError(true);
+        const response = await axios.post(
+          "http://localhost:8000/techwise/client/api/user/login",
+          user,
+          {
+            withCredentials: true,
+          }
+        );
+        const data = response.data.data.user;
+        dispatch(setUserObject(data));
+        console.log(response.data.data.user);
+        setLoading(false);
+        if (response.data.status === "success") {
+          navigateTo("/");
+          location.reload();
+        } else {
+          setLoadingText(true);
         }
-      );
-      const data = response.data.data.user;
-      dispatch(setUserObject(data));
-      console.log(response.data.data.user);
-      setLoading(false);
-      if (response.data.status === "success") {
-        navigateTo("/");
-        location.reload();
       }
+    } catch (error) {
+      setLoadingText(true);
+      console.log(error);
     }
   };
 
@@ -110,28 +118,42 @@ function SignIn() {
               helperText="Weak password. Password must be at least 8 characters long and contain a combination of uppercase letters, lowercase letters, numbers, and special characters."
             />
           )}
-
-          <Button
-            sx={{
-              margin: "30px",
-              backgroundColor: "black",
-              padding: "10px",
-              color: "white",
-              "&:hover": {
+          {loading ? (
+            <Button
+              sx={{
+                margin: "30px",
                 backgroundColor: "black",
+                padding: "10px",
                 color: "white",
-              },
-            }}
-            onClick={handleSubmit}
-          >
-            <Typography>
-              {loading ? (
-                <CircularProgress size={"17px"} sx={{ color: "white" }} />
+                "&:hover": {
+                  backgroundColor: "black",
+                  color: "white",
+                },
+              }}
+            >
+              {loadingText ? (
+                "Oops failed! Please try again"
               ) : (
-                "Login"
+                <CircularProgress size={"17px"} sx={{ color: "white" }} />
               )}
-            </Typography>
-          </Button>
+            </Button>
+          ) : (
+            <Button
+              sx={{
+                margin: "30px",
+                backgroundColor: "black",
+                padding: "10px",
+                color: "white",
+                "&:hover": {
+                  backgroundColor: "black",
+                  color: "white",
+                },
+              }}
+              onClick={handleSubmit}
+            >
+              <Typography>Login</Typography>
+            </Button>
+          )}
           <NavLink
             to="/register"
             style={{
@@ -140,7 +162,7 @@ function SignIn() {
               textAlign: "center",
             }}
           >
-            <Typography>Already registered? Login</Typography>
+            <Typography>Not a member? Register here</Typography>
           </NavLink>
         </FormGroup>
       </div>

@@ -4,12 +4,17 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
   Button,
+  CircularProgress,
   FormControl,
+  FormControlLabel,
   FormGroup,
+  FormLabel,
   IconButton,
   InputAdornment,
   MenuItem,
   OutlinedInput,
+  Radio,
+  RadioGroup,
   Select,
   SelectChangeEvent,
   TextField,
@@ -19,7 +24,17 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import registerImg from "../assets/register-ecom.jpg";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+
+const allPositions = [
+  "CEO",
+  "CFO",
+  "CTO",
+  "Manager",
+  "Supervisor",
+  "Employee",
+  "Other",
+];
 
 const allBusinessTypes = [
   "Sole Proprietorship",
@@ -55,6 +70,9 @@ function isCredentialsValid(email: string, password: string) {
 }
 
 function Register() {
+  const navigateTo = useNavigate();
+  const [loading, setLoading] = React.useState(false);
+  const [loadingText, setLoadingText] = React.useState(false);
   const [step, setStep] = React.useState(false);
   const [error, setError] = React.useState(true);
   const [dateValue, setDateValue] = React.useState<DateType | null | undefined>(
@@ -77,6 +95,13 @@ function Register() {
     setBusinessType(event.target.value as string);
   };
 
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setUser({
+      ...user,
+      gender: event.target.value,
+    });
+  };
+
   const [user, setUser] = React.useState({
     fullName: "",
     email: "",
@@ -87,6 +112,8 @@ function Register() {
     gstRegisteredNumber: "",
     phoneNumber: 0,
     dateOfBirth: formatDate(dateValue),
+    gender: "",
+    position: "",
   });
 
   const handleStep = () => {
@@ -105,13 +132,21 @@ function Register() {
       return;
     } else {
       try {
+        setLoading(true);
         user.businessType = businessType;
         const response = await axios.post(
           "http://localhost:8000/techwise/client/api/user/signup",
           user
         );
+        if (response.status === 201) {
+          setLoading(false);
+          navigateTo("/welcome");
+        } else {
+          setLoadingText(true);
+        }
         console.log(response.data);
       } catch (error) {
+        setLoadingText(true);
         console.log(error);
       }
     }
@@ -155,6 +190,25 @@ function Register() {
                     setUser({ ...user, businessName: e.target.value })
                   }
                 />
+                <Typography sx={{ marginTop: "30px" }}>Position</Typography>
+                <FormControl fullWidth>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={user.position}
+                    onChange={(e) =>
+                      setUser({ ...user, position: e.target.value })
+                    }
+                  >
+                    {allPositions.map((el: string, i: number) => {
+                      return (
+                        <MenuItem key={i} value={el}>
+                          {el}
+                        </MenuItem>
+                      );
+                    })}
+                  </Select>
+                </FormControl>
                 <Typography sx={{ marginTop: "30px" }}>
                   Business Type
                 </Typography>
@@ -215,23 +269,57 @@ function Register() {
                   >
                     <Typography>Back</Typography>
                   </Button>
-                  <Button
-                    variant="outlined"
-                    sx={{
-                      border: "1px solid black",
-                      width: "150px",
-                      height: "45px",
-                      color: "black",
-                      "&:hover": {
-                        backgroundColor: "black",
+                  {loading ? (
+                    <Button
+                      disabled
+                      sx={{
                         border: "1px solid black",
-                        color: "white",
-                      },
-                    }}
-                    onClick={handleSubmit}
-                  >
-                    <Typography>Submit</Typography>
-                  </Button>
+                        width: "150px",
+                        height: "45px",
+                        color: "black",
+                        "&:hover": {
+                          backgroundColor: "black",
+                          border: "1px solid black",
+                          color: "white",
+                        },
+                      }}
+                    >
+                      {loadingText ? (
+                        "Failed"
+                      ) : (
+                        <CircularProgress
+                          size={"17px"}
+                          sx={{ color: "black" }}
+                        />
+                      )}
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outlined"
+                      sx={{
+                        border: "1px solid black",
+                        width: "150px",
+                        height: "45px",
+                        color: "black",
+                        "&:hover": {
+                          backgroundColor: "black",
+                          border: "1px solid black",
+                          color: "white",
+                        },
+                      }}
+                      onClick={handleSubmit}
+                    >
+                      <Typography>
+                        {loading ? (
+                          <CircularProgress
+                            sx={{ width: "10px", height: "20px" }}
+                          />
+                        ) : (
+                          "Submit"
+                        )}
+                      </Typography>
+                    </Button>
+                  )}
                 </div>
               </FormGroup>
             </div>
@@ -286,6 +374,42 @@ function Register() {
                     }
                   />
                 )}
+                <FormControl sx={{ marginTop: "30px" }}>
+                  <FormLabel
+                    id="row-radio-buttons-group-label"
+                    sx={{ color: "black" }}
+                  >
+                    Gender
+                  </FormLabel>
+                  <RadioGroup
+                    row
+                    aria-labelledby="row-radio-buttons-group-label"
+                    name="row-radio-buttons-group"
+                    onChange={handleRadioChange}
+                  >
+                    <FormControlLabel
+                      value="Female"
+                      control={<Radio />}
+                      label="Female"
+                    />
+                    <FormControlLabel
+                      value="Male"
+                      control={<Radio />}
+                      label="Male"
+                    />
+                    <FormControlLabel
+                      value="Other"
+                      control={<Radio />}
+                      label="Other"
+                    />
+                    <FormControlLabel
+                      value="disabled"
+                      disabled
+                      control={<Radio />}
+                      label="other"
+                    />
+                  </RadioGroup>
+                </FormControl>
                 <Typography sx={{ marginTop: "30px" }}>Password</Typography>
                 {error ? (
                   <OutlinedInput

@@ -152,7 +152,7 @@ function ProfileMenu() {
         </MenuItem>
         <MenuItem onClick={handleClose}>
           <NavLink
-            to="/profile/cart"
+            to="/becomeplus"
             style={{
               display: "flex",
               alignItems: "center",

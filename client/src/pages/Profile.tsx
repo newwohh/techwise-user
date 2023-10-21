@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Avatar,
   Button,
   FormControl,
   FormControlLabel,
@@ -7,15 +8,77 @@ import {
   Radio,
   RadioGroup,
   TextField,
+  styled,
 } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useSelector } from "react-redux";
 import { UserObject } from "../store/reducers";
 import axios from "axios";
+import { useDispatch } from "react-redux";
+import { setUserObject } from "../store/reducers";
+
+const VisuallyHiddenInput = styled("input")({
+  clip: "rect(0 0 0 0)",
+  clipPath: "inset(50%)",
+  height: 1,
+  overflow: "hidden",
+  position: "absolute",
+  bottom: 0,
+  left: 0,
+  whiteSpace: "nowrap",
+  width: 1,
+});
 
 function Profile() {
+  const dispatch = useDispatch();
   const currentUser: UserObject = useSelector(
     (state: { user: UserObject }) => state.user
   );
+  const [image, setImage] = React.useState("");
+
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
+  };
+
+  const uploadImage = async (event) => {
+    if (!event.target.files || event.target.files.length === 0) {
+      console.error("No files selected.");
+      return;
+    }
+
+    setImage(event.target.files);
+    const base64 = await convertBase64(event.target.files[0]);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/techwise/client/api/user/updateProfilePic",
+        {
+          user: currentUser.user?._id,
+          image: base64,
+        }
+      );
+
+      console.log(response.data);
+      const data = response.data.user;
+      dispatch(setUserObject(data));
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
+  };
+
   const [updateUser, setUpdateUser] = React.useState({
     id: currentUser.user?._id,
     name: currentUser.user?.fullName,
@@ -38,11 +101,15 @@ function Profile() {
 
       console.log(request.data);
     } catch (error) {
-      console.log(error.message);
+      if (error instanceof Error) {
+        console.log(error.message);
+      } else {
+        console.log("unexpected error occured:" + error);
+      }
     }
   };
 
-  console.log(value, currentUser.user?.fullName.split(" ")[0]);
+  console.log(currentUser.user?.profilePicture);
 
   return (
     <div
@@ -51,10 +118,34 @@ function Profile() {
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
-        marginTop: "-600px",
-        marginBottom: "300px",
+        marginTop: "-750px",
+        marginBottom: "100px",
       }}
     >
+      <div>
+        <Avatar
+          src={currentUser.user?.profilePicture}
+          sx={{ width: "200px", height: "200px" }}
+        />
+        <Button
+          component="label"
+          variant="contained"
+          startIcon={<CloudUploadIcon />}
+          sx={{
+            marginTop: "20px",
+            marginBottom: "20px",
+            backgroundColor: "white",
+            color: "black",
+            "&:hover": {
+              backgroundColor: "white",
+              color: "black",
+            },
+          }}
+        >
+          Upload file
+          <VisuallyHiddenInput type="file" onChange={uploadImage} />
+        </Button>
+      </div>
       <div
         style={{
           display: "flex",

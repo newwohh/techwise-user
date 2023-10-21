@@ -3,16 +3,15 @@ import { NavLink } from "react-router-dom";
 import { Product } from "../pages/ProductsByCategories";
 import secureLocalStorage from "react-secure-storage";
 
+export const getProduct = async (product: Product) => {
+  if (localStorage.getItem("productId")) {
+    secureLocalStorage.removeItem("productId");
+    secureLocalStorage.setItem("productId", product._id);
+  } else if (!localStorage.getItem("productId")) {
+    secureLocalStorage.setItem("productId", product._id);
+  }
+};
 function ProductList({ product }: { product: Product }) {
-  const getProduct = async () => {
-    if (localStorage.getItem("productId")) {
-      secureLocalStorage.removeItem("productId");
-      secureLocalStorage.setItem("productId", product._id);
-    } else if (!localStorage.getItem("productId")) {
-      secureLocalStorage.setItem("productId", product._id);
-    }
-  };
-
   return (
     <div
       style={{
@@ -63,7 +62,7 @@ function ProductList({ product }: { product: Product }) {
               marginBottom: "10px",
               width: "170px",
             }}
-            onClick={getProduct}
+            onClick={() => getProduct(product)}
           >
             View
           </Button>

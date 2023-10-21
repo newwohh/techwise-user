@@ -13,6 +13,7 @@ import ManageAddress from "./pages/ManageAddress";
 import SignIn from "./pages/SignIn";
 import Register from "./pages/Register";
 import Orders from "./pages/Orders";
+import PlusSubscribe from "./pages/PlusSubscribe";
 
 function App() {
   const [product, setProduct] = React.useState<Product[]>([
@@ -76,6 +77,7 @@ function App() {
             <Route path="cart" element={<Cart />} />
             <Route path="orders" element={<Orders />} />
           </Route>
+          <Route path="becomeplus" element={<PlusSubscribe />} />
         </Routes>
         {shouldRenderNavBarAndFooter && (
           <>

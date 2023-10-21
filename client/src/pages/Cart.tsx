@@ -1,12 +1,20 @@
-import { Button, List, ListItem, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  List,
+  ListItem,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { ProductContext } from "../context/ProductContext";
 import { Product } from "./ProductsByCategories";
-import { createPayment } from "../api";
+import { placeOrder } from "../api";
 import { UserObject } from "../store/reducers";
 import { useSelector } from "react-redux";
 
 function Cart() {
+  const [loading, setLoading] = React.useState(false);
+  const [loadingText, setLoadingText] = React.useState(false);
   const { product } = React.useContext(ProductContext);
   const currentUser: UserObject = useSelector(
     (state: { user: UserObject }) => state.user
@@ -32,6 +40,38 @@ function Cart() {
     products: orderModelData,
     address: currentUser.user?.addresses[0],
     totalAmount: Total,
+  };
+
+  const createPayment = async (data) => {
+    try {
+      setLoading(true);
+      const request = await fetch(
+        "http://localhost:8000/techwise/client/api/payment/order",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            amount: 100000,
+          }),
+          credentials: "include",
+        }
+      );
+
+      const response = await request.json();
+      console.log(response);
+      if (response.id) {
+        // initPayment(response);
+        placeOrder(data);
+        setLoadingText(true);
+      }
+    } catch (error) {
+      setLoadingText(true);
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    }
   };
 
   console.log(orderData, orderModelData);
@@ -87,19 +127,38 @@ function Cart() {
               <Typography variant="h5">Items: {products?.length}</Typography>
             </ListItem>
             <ListItem sx={{ width: "100%" }}>
-              <Button
-                sx={{
-                  marginTop: "50px",
-                  backgroundColor: "black",
-                  color: "white",
-                  height: "60px",
-                  width: "250px",
-                  "&:hover": { backgroundColor: "black", color: "white" },
-                }}
-                onClick={() => createPayment(orderData)}
-              >
-                Place order
-              </Button>
+              {loading ? (
+                <Button
+                  sx={{
+                    marginTop: "50px",
+                    backgroundColor: "black",
+                    color: "white",
+                    height: "60px",
+                    width: "250px",
+                    "&:hover": { backgroundColor: "black", color: "white" },
+                  }}
+                >
+                  {loadingText ? (
+                    "Failed"
+                  ) : (
+                    <CircularProgress size={"17px"} sx={{ color: "white" }} />
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  sx={{
+                    marginTop: "50px",
+                    backgroundColor: "black",
+                    color: "white",
+                    height: "60px",
+                    width: "250px",
+                    "&:hover": { backgroundColor: "black", color: "white" },
+                  }}
+                  onClick={() => createPayment(orderData)}
+                >
+                  Place order
+                </Button>
+              )}
             </ListItem>
           </List>
         </div>

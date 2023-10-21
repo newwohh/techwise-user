@@ -1,18 +1,60 @@
 import {
   Avatar,
+  Box,
   Button,
   List,
   ListItem,
   ListItemAvatar,
   ListItemText,
+  Modal,
   Rating,
+  TextField,
   Typography,
 } from "@mui/material";
 import React from "react";
 import { Product } from "../pages/ProductsByCategories";
+import { UserObject } from "../store/reducers";
+import { useSelector } from "react-redux";
+import axios from "axios";
+
+const style = {
+  display: "flex",
+  flexDirection: "column",
+  alignItems: "center",
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: "20px",
+};
 
 function Reviews({ data }: { data: Product }) {
+  const currentUser: UserObject = useSelector(
+    (state: { user: UserObject }) => state.user
+  );
+  const [value, setValue] = React.useState<number | null>(2);
+  const [open, setOpen] = React.useState(false);
+  const [comment, setComment] = React.useState("");
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   console.log(data);
+
+  const addReview = async () => {
+    const response = await axios.post(
+      `http://localhost:8000/techwise/client/api/product/${data._id}/reviews`,
+      {
+        user: currentUser.user?._id,
+        rating: value,
+        comment: comment,
+      }
+    );
+    console.log(response);
+  };
 
   return (
     <div>
@@ -56,6 +98,7 @@ function Reviews({ data }: { data: Product }) {
               padding: "15px",
               "&:hover": { backgroundColor: "black" },
             }}
+            onClick={handleOpen}
           >
             Add Review
           </Button>
@@ -70,10 +113,10 @@ function Reviews({ data }: { data: Product }) {
         }}
       >
         {data.reviews?.map((el, i) => {
-          const dateString = "2023-10-17T12:19:09.715Z";
+          const dateString = el.date;
           const date = new Date(dateString);
 
-          const options = {
+          const formattedDate = date.toLocaleDateString("en-US", {
             year: "numeric",
             month: "long",
             day: "numeric",
@@ -81,9 +124,7 @@ function Reviews({ data }: { data: Product }) {
             minute: "2-digit",
             second: "2-digit",
             hour12: true,
-          };
-
-          const formattedDate = date.toLocaleDateString("en-US", options);
+          });
           return (
             <ListItem
               key={i}
@@ -92,7 +133,7 @@ function Reviews({ data }: { data: Product }) {
             >
               <ListItemAvatar>
                 <Avatar
-                  alt={el.user.fullName}
+                  alt={el.user?.fullName}
                   src="/static/images/avatar/1.jpg"
                 />
               </ListItemAvatar>
@@ -106,7 +147,7 @@ function Reviews({ data }: { data: Product }) {
                       variant="body2"
                       color="text.primary"
                     >
-                      {el.user.fullName}
+                      {el.user?.fullName}
                     </Typography>
                     <Typography>{formattedDate}</Typography>
                     {el.comment}
@@ -117,6 +158,40 @@ function Reviews({ data }: { data: Product }) {
           );
         })}
       </List>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <TextField
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+          />
+          <Rating
+            sx={{ marginTop: "20px" }}
+            name="simple-controlled"
+            value={value}
+            onChange={(event, newValue) => {
+              setValue(newValue);
+            }}
+          />
+          <Button
+            sx={{
+              marginTop: "20px",
+              backgroundColor: "black",
+              color: "white",
+              padding: "9px",
+              width: "100px",
+              "&:hover": { backgroundColor: "black" },
+            }}
+            onClick={addReview}
+          >
+            Add
+          </Button>
+        </Box>
+      </Modal>
     </div>
   );
 }
