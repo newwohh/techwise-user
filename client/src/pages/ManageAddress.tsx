@@ -9,15 +9,16 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 400,
+  width: 450,
   bgcolor: "background.paper",
   boxShadow: 24,
   borderRadius: "20px",
   display: "flex",
   alignItems: "center",
   justifyContent: "space-evenly",
+  height: "430px",
   flexDirection: "column",
-  padding: "60px",
+  padding: "50px",
 };
 
 function ManageAddress() {
@@ -130,7 +131,9 @@ function ManageAddress() {
             boxShadow: "rgba(0, 0, 0, 0.24) 0px 3px 8px",
           }}
         >
-          <Button onClick={handleOpen}>Add new address</Button>
+          <Button onClick={handleOpen} sx={{ color: "black" }}>
+            Add new address
+          </Button>
         </div>
       </div>
       <Modal
@@ -141,34 +144,44 @@ function ManageAddress() {
       >
         <Box sx={style}>
           <TextField
+            placeholder="Company Address"
             value={address.addressLine1}
             onChange={(e) =>
               setAddress({ ...address, addressLine1: e.target.value })
             }
           />
           <TextField
+            placeholder="Company Address"
             value={address.addressLine2}
             onChange={(e) =>
               setAddress({ ...address, addressLine2: e.target.value })
             }
           />
           <TextField
+            placeholder="Company City"
             value={address.city}
             onChange={(e) => setAddress({ ...address, city: e.target.value })}
           />
           <TextField
+            placeholder="Pincode"
             value={address.postalCode}
             onChange={(e) =>
               setAddress({ ...address, postalCode: e.target.value })
             }
           />
           <TextField
+            placeholder="Country"
             value={address.country}
             onChange={(e) =>
               setAddress({ ...address, country: e.target.value })
             }
           />
-          <Button onClick={addAddressHandler}>Submit</Button>
+          <Button
+            onClick={addAddressHandler}
+            sx={{ marginTop: "30px", color: "black" }}
+          >
+            Submit
+          </Button>
         </Box>
       </Modal>
     </div>

@@ -35,6 +35,30 @@ exports.createOrder = async (req, res, next) => {
   }
 };
 
+exports.getAllOrders = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const allOrders = await Order.find({ user: id })
+      .select("status products")
+      .populate("products.product")
+      .exec();
+
+    // console.log(orders);
+
+    if (allOrders) {
+      res.status(201).json({
+        status: "success",
+        data: allOrders,
+      });
+    } else {
+      res.status(500).send("failed");
+    }
+  } catch (error) {
+    res.status(500).send("failed");
+    console.log(error.message);
+  }
+};
+
 exports.cancelOrder = async (req, res, next) => {
   try {
     const orderId = req.body.orderId;

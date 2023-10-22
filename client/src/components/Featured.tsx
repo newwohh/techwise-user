@@ -53,7 +53,7 @@ function Featured() {
                 "-"
               )}`}
             >
-              <Button onClick={() => getProduct(el)}>
+              <Button sx={{ color: "black" }} onClick={() => getProduct(el)}>
                 <Typography>{el.name}</Typography>
               </Button>
             </NavLink>
