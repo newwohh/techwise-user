@@ -96,3 +96,48 @@ ul li {
 .theme-button:hover {
   background-color: #0056a9;
 }
+
+.footer {
+  background-color: #155a8a;
+  color: black;
+  padding: 20px 0;
+  text-align: center;
+}
+.footer .container-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+.footer h4 {
+  font-size: 16px;
+  margin: 10px 0;
+}
+.footer ul {
+  list-style: none;
+  padding: 0;
+}
+.footer ul li {
+  margin: 10px 0;
+}
+.footer .footer-logo p {
+  font-size: 14px;
+}
+.footer .footer-newsletter input[type="email"] {
+  padding: 10px;
+  width: 100%;
+}
+.footer .footer-newsletter button {
+  background-color: #0055aa;
+  color: black;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+}
+.footer .footer-newsletter button:hover {
+  background-color: #004488;
+}
+.footer .footer-social a {
+  color: black;
+  text-decoration: none;
+  margin: 0 10px;
+}
