@@ -3,6 +3,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
+  Box,
   Button,
   CircularProgress,
   FormControl,
@@ -19,12 +20,14 @@ import {
   SelectChangeEvent,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import registerImg from "../assets/register-ecom.jpg";
 import { NavLink, useNavigate } from "react-router-dom";
+import logo from "../../public/vite.svg";
 
 const allPositions = [
   "CEO",
@@ -70,6 +73,7 @@ function isCredentialsValid(email: string, password: string) {
 }
 
 function Register() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
   const navigateTo = useNavigate();
   const [loading, setLoading] = React.useState(false);
   const [loadingText, setLoadingText] = React.useState(false);
@@ -127,7 +131,11 @@ function Register() {
   };
 
   const handleSubmit = async () => {
-    if (!isCredentialsValid(user.email, user.password)) {
+    if (
+      !isCredentialsValid(user.email, user.password) ||
+      user.gstRegisteredNumber.length !== 15 ||
+      user.phoneNumber !== 10
+    ) {
       setError(false);
       return;
     } else {
@@ -159,15 +167,21 @@ function Register() {
       <div
         style={{ marginLeft: "20px", marginTop: "30px", position: "absolute" }}
       >
-        logo
+        <img src={logo} alt="logo" style={{ width: "50px" }} />
       </div>
-      <div
-        style={{
+      <Box
+        sx={{
           display: "flex",
           justifyContent: "center",
-          width: "200vh",
+          width: {
+            sm: "150px",
+            lg: "200vh",
+          },
           height: "100vh",
           alignItems: "center",
+          padding: {
+            sm: "100px",
+          },
         }}
       >
         {step ? (
@@ -182,7 +196,7 @@ function Register() {
           >
             <div style={{ width: "350px" }}>
               <FormGroup>
-                <Typography sx={{ marginTop: "30px" }}>
+                <Typography sx={{ marginTop: "10px" }}>
                   Business Name
                 </Typography>
                 <TextField
@@ -234,12 +248,22 @@ function Register() {
                     setUser({ ...user, gstRegisteredNumber: e.target.value })
                   }
                 />
+                {error || (
+                  <Typography sx={{ color: "red", marginTop: "5px" }}>
+                    Invalid GST number GST number is a 15 digits number
+                  </Typography>
+                )}
                 <Typography sx={{ marginTop: "30px" }}>Phone Number</Typography>
                 <TextField
                   onChange={(e) =>
                     setUser({ ...user, phoneNumber: Number(e.target.value) })
                   }
                 />
+                {error || (
+                  <Typography sx={{ color: "red", marginTop: "5px" }}>
+                    Invalid Phone number Phone number is a 10 digits number
+                  </Typography>
+                )}
                 <Typography sx={{ marginTop: "30px" }}>
                   Date of birth
                 </Typography>
@@ -492,14 +516,16 @@ function Register() {
           </div>
         )}
 
-        <div style={{ width: "100vh", height: "100%" }}>
-          <img
-            src={registerImg}
-            alt="intro"
-            style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          />
-        </div>
-      </div>
+        {isMatch && (
+          <div style={{ width: "100vh", height: "100%" }}>
+            <img
+              src={registerImg}
+              alt="intro"
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
+            />
+          </div>
+        )}
+      </Box>
     </>
   );
 }

@@ -14,6 +14,7 @@ import SignIn from "./pages/SignIn";
 import Register from "./pages/Register";
 import Orders from "./pages/Orders";
 import PlusSubscribe from "./pages/PlusSubscribe";
+import ContactUs from "./pages/ContactUs";
 
 function App() {
   const [product, setProduct] = React.useState<Product[]>([
@@ -60,6 +61,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/welcome" element={<SignIn />} />
+          <Route path="/contact" element={<ContactUs />} />
           <Route path="/category/:category">
             <Route index element={<ProductsByCategories />} />
             <Route path="view/:id" element={<ProductView />} />

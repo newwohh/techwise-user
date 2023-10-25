@@ -11,7 +11,11 @@ function BannerSearch() {
       </Typography>
       <Input
         placeholder="Search"
-        sx={{ marginTop: "30px", width: "100%", color: "black" }}
+        sx={{
+          marginTop: "30px",
+          width: { lg: "100%", xm: "100px" },
+          color: "black",
+        }}
       />
     </div>
   );

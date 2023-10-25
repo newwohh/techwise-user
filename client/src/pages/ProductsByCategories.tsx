@@ -5,6 +5,7 @@ import {
   List,
   Box,
   LinearProgress,
+  useMediaQuery,
 } from "@mui/material";
 import ProductList from "../components/ProductList";
 import image from "../assets/productlistings.jpg";
@@ -53,6 +54,7 @@ export const useScrollToTop = () => {
 };
 
 function ProductsByCategories() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
   const { category } = useParams();
   console.log(category);
   useScrollToTop();
@@ -108,7 +110,7 @@ function ProductsByCategories() {
           <img
             src={image}
             style={{
-              width: "1200px",
+              width: isMatch ? "1200px" : "300px",
               height: "500px",
               objectFit: "cover",
               borderRadius: "40px",
@@ -118,7 +120,7 @@ function ProductsByCategories() {
             style={{
               position: "absolute",
               marginTop: "-300px",
-              marginLeft: "50px",
+              marginLeft: isMatch ? "50px" : "300px",
             }}
           >
             <BannerSearch />

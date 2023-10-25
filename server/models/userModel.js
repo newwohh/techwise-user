@@ -43,12 +43,26 @@ const userSchema = new mongoose.Schema({
   },
   dateOfBirth: {
     type: Date,
+    validate: {
+      validator: function (value) {
+        const today = new Date();
+        const maxDate = new Date("2005-01-01");
+        return value <= maxDate && value < today;
+      },
+      message: "User must be born before 2005.",
+    },
   },
   profilePicture: {
     type: String,
   },
   phoneNumber: {
-    type: String,
+    type: Number,
+    validate: {
+      validator: function (value) {
+        return /^\d{10}$/.test(value);
+      },
+      message: "Phone number must be 10 digits long.",
+    },
   },
   addresses: [
     {
@@ -95,11 +109,10 @@ const userSchema = new mongoose.Schema({
     required: true,
   },
   gstRegisteredNumber: {
-    type: String,
+    type: Number,
     required: true,
     unique: true,
     trim: true,
-    uppercase: true,
   },
   isPlusMember: {
     type: Boolean,

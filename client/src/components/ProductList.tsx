@@ -1,4 +1,4 @@
-import { Button, Rating, Typography } from "@mui/material";
+import { Button, Rating, Typography, useMediaQuery } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import { Product } from "../pages/ProductsByCategories";
 import secureLocalStorage from "react-secure-storage";
@@ -12,18 +12,25 @@ export const getProduct = async (product: Product) => {
   }
 };
 function ProductList({ product }: { product: Product }) {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
+
   return (
     <div
       style={{
+        marginLeft: isMatch ? "0" : "50px",
         display: "flex",
-        width: "1200px",
-        justifyContent: "space-between",
+        width: isMatch ? "1200px" : "1200px",
+        // height: isMatch ? "0px" : "400px",
+        alignItems: isMatch ? "normal" : "center",
+        justifyContent: isMatch ? "space-between" : "center",
+        flexDirection: isMatch ? "row" : "column",
       }}
     >
       <div
         style={{
           display: "flex",
           justifyContent: "center",
+          flexDirection: isMatch ? "row" : "column",
         }}
       >
         <div>

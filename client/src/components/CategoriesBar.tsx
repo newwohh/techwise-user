@@ -4,6 +4,7 @@ import TabletMacIcon from "@mui/icons-material/TabletMac";
 import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import CategoriesBox from "./CategoriesBox";
+import { useMediaQuery } from "@mui/material";
 
 const allCategories = [
   {
@@ -29,8 +30,16 @@ const allCategories = [
 ];
 
 function CategoriesBar() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
+
   return (
-    <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: isMatch ? "space-evenly" : "center",
+        flexDirection: isMatch ? "row" : "column",
+      }}
+    >
       {allCategories.map((el, i) => {
         return <CategoriesBox key={i} icon={el.icon} title={el.title} />;
       })}

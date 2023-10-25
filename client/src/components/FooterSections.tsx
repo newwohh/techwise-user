@@ -2,7 +2,7 @@ import React from "react";
 import SearchIcon from "@mui/icons-material/Search";
 import RateReviewIcon from "@mui/icons-material/RateReview";
 import ThumbUpAltIcon from "@mui/icons-material/ThumbUpAlt";
-import { Icon, Typography } from "@mui/material";
+import { Icon, Typography, useMediaQuery } from "@mui/material";
 
 const allFooterSections = [
   {
@@ -23,12 +23,15 @@ const allFooterSections = [
 ];
 
 function FooterSections() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
+
   return (
     <div
       style={{
         display: "flex",
         justifyContent: "space-evenly",
         marginTop: "120px",
+        flexDirection: isMatch ? "row" : "column",
       }}
     >
       {allFooterSections.map((el, i) => {

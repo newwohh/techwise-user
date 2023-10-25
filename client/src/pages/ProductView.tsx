@@ -8,6 +8,7 @@ import {
   SelectChangeEvent,
   Snackbar,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import axios, { AxiosResponse } from "axios";
@@ -31,6 +32,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 });
 
 function ProductView() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
   const [play] = useSound(errorSound);
   const navigateTo: NavigateFunction = useNavigate();
   const { product, pushItemToArray } = React.useContext(ProductContext);
@@ -113,7 +115,13 @@ function ProductView() {
 
   return (
     <div>
-      <div style={{ padding: 70, display: "flex" }}>
+      <div
+        style={{
+          padding: 70,
+          display: "flex",
+          flexDirection: isMatch ? "row" : "column",
+        }}
+      >
         <div style={{ display: "flex", flexDirection: "column" }}>
           {data?.images.map((el: string, i: number) => {
             return (
@@ -133,7 +141,7 @@ function ProductView() {
         </div>
         <div
           style={{
-            marginLeft: "200px",
+            marginLeft: isMatch ? "200px" : "0",
             display: "flex",
             flexDirection: "column",
             justifyContent: "space-evenly",

@@ -13,6 +13,7 @@ import {
   Stack,
   TextField,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import axios from "axios";
 import { Product } from "../pages/ProductsByCategories";
@@ -20,6 +21,7 @@ import secureLocalStorage from "react-secure-storage";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import ProfileMenu from "./ProfileMenu";
 import { ProductContext } from "../context/ProductContext";
+import MobileDrawer from "./MobileDrawer";
 // import { useSelector } from "react-redux";
 // import { UserObject } from "../store/reducers";
 
@@ -40,6 +42,8 @@ const categories: string[] = [
 function NavBar() {
   // const currentUser = useSelector((state: { user: UserObject }) => state.user);
   const nav = useNavigate();
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
+
   const { product } = React.useContext(ProductContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [productByCategory, setProductByCategory] = React.useState<Product[]>(
@@ -103,7 +107,7 @@ function NavBar() {
     nav(`category/${category}/view/${value?.replaceAll(" ", "-")}`);
   };
 
-  const cartItemsNumber: number | undefined = product?.length;
+  const cartItemsNumber: number | undefined = product?.length - 1;
 
   console.log(value);
 
@@ -111,196 +115,209 @@ function NavBar() {
     <nav
       style={{ paddingTop: "20px", paddingLeft: "80px", paddingRight: "80px" }}
     >
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <div>
-          <NavLink
+      {isMatch ? (
+        <>
+          <div
             style={{
-              textDecoration: "none",
-              color: "black",
-              fontFamily: "Helvetica",
-              fontSize: "20px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
             }}
-            to="/"
           >
-            Home
-          </NavLink>
-        </div>
-        <div>
-          <div style={{ display: "flex", alignItems: "center" }}>
-            <IconButton
-              aria-label="more"
-              id="long-button"
-              aria-controls={open ? "long-menu" : undefined}
-              aria-expanded={open ? "true" : undefined}
-              aria-haspopup="true"
-              onClick={handleClick}
-              sx={{ width: "50px", height: "50px", padding: "-120px" }}
-            >
-              <MenuIcon sx={{ height: "50px" }} />
-            </IconButton>
-            <Typography variant="h6">Categories</Typography>
-            <Menu
-              id="long-menu"
-              MenuListProps={{
-                "aria-labelledby": "long-button",
-              }}
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              PaperProps={{
-                style: {
-                  maxHeight: ITEM_HEIGHT * 4.5,
-                  width: "20ch",
-                },
-              }}
-            >
-              {categories.map((option) => (
-                <MenuItem
-                  key={option}
-                  onClick={() => getProductsByCategory(option)}
+            <div>
+              <NavLink
+                style={{
+                  textDecoration: "none",
+                  color: "black",
+                  fontFamily: "Helvetica",
+                  fontSize: "20px",
+                }}
+                to="/"
+              >
+                Home
+              </NavLink>
+            </div>
+            <div>
+              <div style={{ display: "flex", alignItems: "center" }}>
+                <IconButton
+                  aria-label="more"
+                  id="long-button"
+                  aria-controls={open ? "long-menu" : undefined}
+                  aria-expanded={open ? "true" : undefined}
+                  aria-haspopup="true"
+                  onClick={handleClick}
+                  sx={{ width: "50px", height: "50px", padding: "-120px" }}
                 >
-                  {option}
-                </MenuItem>
-              ))}
-            </Menu>
-          </div>
-        </div>
+                  <MenuIcon sx={{ height: "50px" }} />
+                </IconButton>
+                <Typography variant="h6">Categories</Typography>
+                <Menu
+                  id="long-menu"
+                  MenuListProps={{
+                    "aria-labelledby": "long-button",
+                  }}
+                  anchorEl={anchorEl}
+                  open={open}
+                  onClose={handleClose}
+                  PaperProps={{
+                    style: {
+                      maxHeight: ITEM_HEIGHT * 4.5,
+                      width: "20ch",
+                    },
+                  }}
+                >
+                  {categories.map((option) => (
+                    <MenuItem
+                      key={option}
+                      onClick={() => getProductsByCategory(option)}
+                    >
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </div>
+            </div>
 
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Stack spacing={2} sx={{ width: 350, display: "flex" }}>
-            <Autocomplete
-              id="free-solo-demo"
-              freeSolo
-              onChange={(event: React.FormEvent, newValue: string | null) => {
-                setValue(newValue);
-              }}
-              options={productByCategory.map((option: Product) => option.name)}
-              renderInput={(params) => (
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  {errorMessage ? (
-                    <TextField
-                      error
-                      label="Please select a category"
-                      {...params}
-                      sx={{ ml: 1, flex: 1 }}
-                      placeholder="Search..."
-                    />
-                  ) : (
-                    <TextField
-                      {...params}
-                      sx={{ ml: 1, flex: 1 }}
-                      placeholder="Search..."
-                    />
-                  )}
-                </div>
-              )}
-            />
-          </Stack>
-          <IconButton
-            onClick={() => viewData(value)}
-            edge="end"
-            id="cart"
-            aria-label="cart"
-            aria-controls={openCart ? "long-menu" : undefined}
-            aria-expanded={openCart ? "true" : undefined}
-            aria-haspopup="true"
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              width: "50px",
-              height: "50px",
-              ml: "20px",
-            }}
-          >
-            <SearchIcon />
-          </IconButton>
-        </div>
-        <div>
-          <Badge color="secondary" badgeContent={cartItemsNumber}>
-            <IconButton
-              id="fade-button"
-              aria-controls={openCart ? "fade-menu" : undefined}
-              aria-haspopup="true"
-              aria-expanded={openCart ? "true" : undefined}
-              onClick={handleClickCart}
-            >
-              <ShoppingCartIcon
-                sx={{ height: "42px", width: "42px", margin: -1 }}
-              />
-            </IconButton>
-          </Badge>
-        </div>
-        <div>
-          <ProfileMenu />
-        </div>
-      </div>
-      <Menu
-        id="fade-menu"
-        MenuListProps={{
-          "aria-labelledby": "fade-button",
-        }}
-        anchorEl={anchorElCart}
-        open={openCart}
-        onClose={handleCloseCart}
-        TransitionComponent={Fade}
-        PaperProps={{
-          style: {
-            maxHeight: ITEM_HEIGHT * 4.5,
-            width: "350px",
-          },
-        }}
-      >
-        {product?.map((product: Product) => (
-          <MenuItem key={product._id}>
             <div
               style={{
                 display: "flex",
-                justifyContent: "space-between",
-                width: "100%",
+                alignItems: "center",
               }}
             >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <Typography>{product.name}</Typography>
-              </div>
-              <div>
-                <Typography>${product.price}</Typography>
-              </div>
+              <Stack spacing={2} sx={{ width: 350, display: "flex" }}>
+                <Autocomplete
+                  id="free-solo-demo"
+                  freeSolo
+                  onChange={(
+                    event: React.FormEvent,
+                    newValue: string | null
+                  ) => {
+                    setValue(newValue);
+                  }}
+                  options={productByCategory.map(
+                    (option: Product) => option.name
+                  )}
+                  renderInput={(params) => (
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      {errorMessage ? (
+                        <TextField
+                          error
+                          label="Please select a category"
+                          {...params}
+                          sx={{ ml: 1, flex: 1 }}
+                          placeholder="Search..."
+                        />
+                      ) : (
+                        <TextField
+                          {...params}
+                          sx={{ ml: 1, flex: 1 }}
+                          placeholder="Search..."
+                        />
+                      )}
+                    </div>
+                  )}
+                />
+              </Stack>
+              <IconButton
+                onClick={() => viewData(value)}
+                edge="end"
+                id="cart"
+                aria-label="cart"
+                aria-controls={openCart ? "long-menu" : undefined}
+                aria-expanded={openCart ? "true" : undefined}
+                aria-haspopup="true"
+                sx={{
+                  backgroundColor: "black",
+                  color: "white",
+                  width: "50px",
+                  height: "50px",
+                  ml: "20px",
+                }}
+              >
+                <SearchIcon />
+              </IconButton>
             </div>
-          </MenuItem>
-        ))}
-        <MenuItem
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Button
-            sx={{
-              backgroundColor: "black",
-              color: "white",
-              "&:hover": {
-                backgroundColor: "black",
-                color: "white",
+            <div>
+              <Badge color="secondary" badgeContent={cartItemsNumber}>
+                <IconButton
+                  id="fade-button"
+                  aria-controls={openCart ? "fade-menu" : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={openCart ? "true" : undefined}
+                  onClick={handleClickCart}
+                >
+                  <ShoppingCartIcon
+                    sx={{ height: "42px", width: "42px", margin: -1 }}
+                  />
+                </IconButton>
+              </Badge>
+            </div>
+            <div>
+              <ProfileMenu />
+            </div>
+          </div>
+          <Menu
+            id="fade-menu"
+            MenuListProps={{
+              "aria-labelledby": "fade-button",
+            }}
+            anchorEl={anchorElCart}
+            open={openCart}
+            onClose={handleCloseCart}
+            TransitionComponent={Fade}
+            PaperProps={{
+              style: {
+                maxHeight: ITEM_HEIGHT * 4.5,
+                width: "350px",
               },
             }}
           >
-            Place order
-          </Button>
-        </MenuItem>
-      </Menu>
+            {product?.map((product: Product) => (
+              <MenuItem key={product._id}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <div style={{ display: "flex", flexDirection: "column" }}>
+                    <Typography>{product.name}</Typography>
+                  </div>
+                  <div>
+                    <Typography>${product.price}</Typography>
+                  </div>
+                </div>
+              </MenuItem>
+            ))}
+            <MenuItem
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <NavLink to="/profile/cart">
+                <Button
+                  sx={{
+                    backgroundColor: "black",
+                    color: "white",
+                    "&:hover": {
+                      backgroundColor: "black",
+                      color: "white",
+                    },
+                  }}
+                >
+                  Place order
+                </Button>
+              </NavLink>
+            </MenuItem>
+          </Menu>
+        </>
+      ) : (
+        <MobileDrawer />
+      )}
     </nav>
   );
 }

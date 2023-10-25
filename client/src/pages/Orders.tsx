@@ -53,7 +53,7 @@ function Orders() {
         alignItems: "center",
         textAlign: "center",
         marginTop: "-650px",
-        marginBottom: "400px",
+        marginBottom: "450px",
       }}
     >
       <div
@@ -63,41 +63,45 @@ function Orders() {
           width: "800px",
         }}
       >
-        <List>
-          {data?.map((el, i: number) => {
-            const products = el.products;
-            return (
-              <ListItem
-                sx={{
-                  marginTop: "30px",
-                  width: "700px",
-                  display: "flex",
-                  justifyContent: "space-between",
-                }}
-                key={i}
-                secondaryAction={
-                  <Button
-                    sx={{ color: "black" }}
-                    onClick={() => cancelOrderHandler(el._id)}
-                  >
-                    Cancel Order
-                  </Button>
-                }
-                disablePadding
-              >
-                {products.map((prod, i: number) => {
-                  return (
-                    <div key={i}>
-                      <Typography>{prod.product.name}</Typography>
-                      <Typography>Quantity: {prod.quantity}</Typography>
-                      <Typography>Status {el.status}</Typography>
-                    </div>
-                  );
-                })}
-              </ListItem>
-            );
-          })}
-        </List>
+        {data.length === 0 ? (
+          <Typography>No Orders</Typography>
+        ) : (
+          <List>
+            {data?.map((el, i: number) => {
+              const products = el.products;
+              return (
+                <ListItem
+                  sx={{
+                    marginTop: "30px",
+                    width: "700px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                  key={i}
+                  secondaryAction={
+                    <Button
+                      sx={{ color: "black" }}
+                      onClick={() => cancelOrderHandler(el._id)}
+                    >
+                      Cancel Order
+                    </Button>
+                  }
+                  disablePadding
+                >
+                  {products.map((prod, i: number) => {
+                    return (
+                      <div key={i}>
+                        <Typography>{prod.product.name}</Typography>
+                        <Typography>Quantity: {prod.quantity}</Typography>
+                        <Typography>Status {el.status}</Typography>
+                      </div>
+                    );
+                  })}
+                </ListItem>
+              );
+            })}
+          </List>
+        )}
       </div>
     </div>
   );

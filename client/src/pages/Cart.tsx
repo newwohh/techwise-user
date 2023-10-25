@@ -74,8 +74,6 @@ function Cart() {
     }
   };
 
-  console.log(orderData, orderModelData);
-
   return (
     <div
       style={{
@@ -84,7 +82,7 @@ function Cart() {
         alignItems: "center",
         textAlign: "center",
         marginTop: "-750px",
-        marginBottom: "400px",
+        marginBottom: "500px",
       }}
     >
       <div
@@ -94,74 +92,85 @@ function Cart() {
           width: "800px",
         }}
       >
-        <div>
-          <List>
-            {products?.map((el: Product, i: number) => {
-              return (
-                <ListItem key={i}>
-                  <img src={el.images[0]} alt="prod-img" />
-                  <div style={{ marginLeft: "30px" }}>
-                    <Typography>{el.name}</Typography>
-                    <Typography>${el.price}</Typography>
-                    <Typography>Quantity: {el.quantity}</Typography>
-                  </div>
+        {products?.length === 0 ? (
+          <Typography>No items found in your cart</Typography>
+        ) : (
+          <>
+            <div>
+              <List>
+                {products?.map((el: Product, i: number) => {
+                  return (
+                    <ListItem key={i}>
+                      <img src={el.images[0]} alt="prod-img" />
+                      <div style={{ marginLeft: "30px" }}>
+                        <Typography>{el.name}</Typography>
+                        <Typography>${el.price}</Typography>
+                        <Typography>Quantity: {el.quantity}</Typography>
+                      </div>
+                    </ListItem>
+                  );
+                })}
+              </List>
+            </div>
+            <div>
+              <List
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  textAlign: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                <ListItem sx={{ display: "flex", justifyContent: "center" }}>
+                  <Typography variant="h5">Total: ${Total}</Typography>
                 </ListItem>
-              );
-            })}
-          </List>
-        </div>
-        <div>
-          <List
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              textAlign: "center",
-              justifyContent: "center",
-              width: "100%",
-            }}
-          >
-            <ListItem sx={{ display: "flex", justifyContent: "center" }}>
-              <Typography variant="h5">Total: ${Total}</Typography>
-            </ListItem>
-            <ListItem sx={{ display: "flex", justifyContent: "center" }}>
-              <Typography variant="h5">Items: {products?.length}</Typography>
-            </ListItem>
-            <ListItem sx={{ width: "100%" }}>
-              {loading ? (
-                <Button
-                  sx={{
-                    marginTop: "50px",
-                    backgroundColor: "black",
-                    color: "white",
-                    height: "60px",
-                    width: "250px",
-                    "&:hover": { backgroundColor: "black", color: "white" },
-                  }}
-                >
-                  {loadingText ? (
-                    "Failed"
+                <ListItem sx={{ display: "flex", justifyContent: "center" }}>
+                  <Typography variant="h5">
+                    Items: {products?.length}
+                  </Typography>
+                </ListItem>
+                <ListItem sx={{ width: "100%" }}>
+                  {loading ? (
+                    <Button
+                      sx={{
+                        marginTop: "50px",
+                        backgroundColor: "black",
+                        color: "white",
+                        height: "60px",
+                        width: "250px",
+                        "&:hover": { backgroundColor: "black", color: "white" },
+                      }}
+                    >
+                      {loadingText ? (
+                        "Success"
+                      ) : (
+                        <CircularProgress
+                          size={"17px"}
+                          sx={{ color: "white" }}
+                        />
+                      )}
+                    </Button>
                   ) : (
-                    <CircularProgress size={"17px"} sx={{ color: "white" }} />
+                    <Button
+                      sx={{
+                        marginTop: "50px",
+                        backgroundColor: "black",
+                        color: "white",
+                        height: "60px",
+                        width: "250px",
+                        "&:hover": { backgroundColor: "black", color: "white" },
+                      }}
+                      onClick={() => createPayment(orderData)}
+                    >
+                      Place order
+                    </Button>
                   )}
-                </Button>
-              ) : (
-                <Button
-                  sx={{
-                    marginTop: "50px",
-                    backgroundColor: "black",
-                    color: "white",
-                    height: "60px",
-                    width: "250px",
-                    "&:hover": { backgroundColor: "black", color: "white" },
-                  }}
-                  onClick={() => createPayment(orderData)}
-                >
-                  Place order
-                </Button>
-              )}
-            </ListItem>
-          </List>
-        </div>
+                </ListItem>
+              </List>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

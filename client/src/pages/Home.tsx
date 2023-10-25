@@ -1,16 +1,15 @@
 import banner from "../assets/banner.jpg";
 import BannerSearch from "../components/BannerSearch";
-import { Typography } from "@mui/material";
+import { Typography, useMediaQuery } from "@mui/material";
 import CategoriesBar from "../components/CategoriesBar";
 import Featured from "../components/Featured";
 import { useScrollToTop } from "./ProductsByCategories";
-// import { useSelector } from "react-redux";
-// import { User } from "../store/reducers";
 
 function Home() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
+
   useScrollToTop();
-  // const currentUser = useSelector((state: { user: User | null }) => state.user);
-  // console.log(currentUser);
+
   return (
     <div style={{ paddingLeft: "40px", paddingRight: "40px" }}>
       <header>
@@ -19,8 +18,8 @@ function Home() {
             src={banner}
             alt="banner"
             style={{
-              width: "100%",
-              height: "800px",
+              width: isMatch ? "100%" : 300,
+              height: isMatch ? "800px" : "700px",
               borderRadius: "50px",
               marginTop: "50px",
               objectFit: "cover",
@@ -32,8 +31,8 @@ function Home() {
         <section
           style={{
             position: "absolute",
-            marginTop: "-550px",
-            marginLeft: "100px",
+            marginTop: isMatch ? "-550px" : "-500px",
+            marginLeft: isMatch ? "100px" : "20px",
           }}
         >
           <BannerSearch />
@@ -41,7 +40,11 @@ function Home() {
       </header>
       <main>
         <section style={{ padding: 20, marginTop: "50px" }}>
-          <div>
+          <div
+            style={{
+              textAlign: isMatch ? "match-parent" : "center",
+            }}
+          >
             <Typography variant="h5" sx={{ fontWeight: 600 }}>
               Categories
             </Typography>

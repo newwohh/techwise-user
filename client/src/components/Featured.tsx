@@ -1,4 +1,9 @@
-import { Button, CircularProgress, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import React from "react";
@@ -7,6 +12,8 @@ import { NavLink } from "react-router-dom";
 import { getProduct } from "./ProductList";
 
 function Featured() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
+
   const getFeaturedProducts = async () => {
     try {
       const response = await axios.get(
@@ -32,7 +39,13 @@ function Featured() {
   console.log(data);
 
   return (
-    <div style={{ display: "flex", justifyContent: "space-around" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "space-around",
+        flexDirection: isMatch ? "row" : "column",
+      }}
+    >
       {data?.map((el: Product, i: number) => {
         return (
           <div
