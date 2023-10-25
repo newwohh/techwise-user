@@ -2,6 +2,7 @@ import React from "react";
 import {
   Avatar,
   Button,
+  Container,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -9,6 +10,7 @@ import {
   RadioGroup,
   TextField,
   styled,
+  useMediaQuery,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useSelector } from "react-redux";
@@ -30,6 +32,7 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 function Profile() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
   const dispatch = useDispatch();
   const currentUser: UserObject = useSelector(
     (state: { user: UserObject }) => state.user
@@ -112,13 +115,13 @@ function Profile() {
   console.log(currentUser.user?.profilePicture);
 
   return (
-    <div
-      style={{
+    <Container
+      sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
-        marginTop: "-750px",
+        marginTop: { lg: "-750px", xs: "0" },
         marginBottom: "100px",
       }}
     >
@@ -149,8 +152,10 @@ function Profile() {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: isMatch ? "space-between" : "center",
+          alignItems: isMatch ? "normal" : "center",
           width: "600px",
+          flexDirection: isMatch ? "row" : "column",
         }}
       >
         {update ? (
@@ -163,7 +168,11 @@ function Profile() {
             }
           />
         ) : (
-          <TextField disabled placeholder={currentUser.user?.fullName} />
+          <TextField
+            disabled
+            sx={{ width: { xs: "230px" } }}
+            placeholder={currentUser.user?.fullName}
+          />
         )}
         {update ? (
           <TextField
@@ -175,7 +184,11 @@ function Profile() {
             }
           />
         ) : (
-          <TextField disabled placeholder={currentUser.user?.username} />
+          <TextField
+            disabled
+            sx={{ width: { xs: "230px" } }}
+            placeholder={currentUser.user?.username}
+          />
         )}
       </div>
       <div style={{ display: "flex", marginTop: "40px" }}>
@@ -234,7 +247,9 @@ function Profile() {
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
+          justifyContent: isMatch ? "space-between" : "center",
+          alignItems: isMatch ? "normal" : "center",
+          flexDirection: isMatch ? "row" : "column",
           width: "600px",
           marginTop: "40px",
         }}
@@ -309,7 +324,7 @@ function Profile() {
           ""
         )}
       </div>
-    </div>
+    </Container>
   );
 }
 

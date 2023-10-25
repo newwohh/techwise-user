@@ -1,11 +1,18 @@
 import React from "react";
-import { Button, List, ListItem, Typography } from "@mui/material";
+import {
+  Button,
+  List,
+  ListItem,
+  Typography,
+  useMediaQuery,
+} from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import axios, { AxiosResponse } from "axios";
 import { UserObject } from "../store/reducers";
 import { useSelector } from "react-redux";
 
 function Orders() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
   const currentUser: UserObject = useSelector(
     (state: { user: UserObject }) => state.user
   );
@@ -30,7 +37,7 @@ function Orders() {
 
       console.log((await response).data);
     } catch (error) {
-      console.log(error);
+      console.log(error.message);
     }
   };
 
@@ -52,32 +59,33 @@ function Orders() {
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
-        marginTop: "-650px",
+        marginTop: isMatch ? "-650px" : "0px",
         marginBottom: "450px",
       }}
     >
       <div
         style={{
           display: "flex",
-          justifyContent: "space-between",
-          width: "800px",
+          justifyContent: isMatch ? "space-between" : "center",
+          flexDirection: isMatch ? "row" : "column",
+          width: isMatch ? "800px" : "400px",
         }}
       >
-        {data.length === 0 ? (
+        {data?.length === 0 ? (
           <Typography>No Orders</Typography>
         ) : (
           <List>
             {data?.map((el, i: number) => {
-              const products = el.products;
+              const products = el?.products;
               return (
                 <ListItem
+                  key={i}
                   sx={{
                     marginTop: "30px",
                     width: "700px",
                     display: "flex",
                     justifyContent: "space-between",
                   }}
-                  key={i}
                   secondaryAction={
                     <Button
                       sx={{ color: "black" }}
@@ -88,12 +96,12 @@ function Orders() {
                   }
                   disablePadding
                 >
-                  {products.map((prod, i: number) => {
+                  {products?.map((prod, i: number) => {
                     return (
-                      <div key={i}>
-                        <Typography>{prod.product.name}</Typography>
-                        <Typography>Quantity: {prod.quantity}</Typography>
-                        <Typography>Status {el.status}</Typography>
+                      <div key={i + 2}>
+                        <Typography>{prod?.product?.name}</Typography>
+                        <Typography>Quantity: {prod?.quantity}</Typography>
+                        <Typography>Status {el?.status}</Typography>
                       </div>
                     );
                   })}

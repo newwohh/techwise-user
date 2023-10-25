@@ -1,7 +1,10 @@
 import React from "react";
 import ProfileDrawer from "./ProfileDrawer";
+import { useMediaQuery } from "@mui/material";
 
 function ProfileWrapper({ children }: { children: React.ReactNode }) {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
+
   return (
     <div
       style={{
@@ -9,7 +12,7 @@ function ProfileWrapper({ children }: { children: React.ReactNode }) {
         paddingTop: "40px",
       }}
     >
-      <ProfileDrawer />
+      {isMatch && <ProfileDrawer />}
       {children}
     </div>
   );

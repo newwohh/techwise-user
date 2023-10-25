@@ -19,6 +19,10 @@ import ListItemText from "@mui/material/ListItemText";
 import InboxIcon from "@mui/icons-material/MoveToInbox";
 import MailIcon from "@mui/icons-material/Mail";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { UserObject, logoutUser } from "../store/reducers";
+import axios from "axios";
+import { AnyAction } from "redux";
 
 const drawerWidth = 240;
 
@@ -32,16 +36,27 @@ const navLinks = [
     link: "/",
   },
   {
-    title: "Home",
-    link: "/",
-  },
-  {
     title: "Profile",
     link: "/profile",
   },
   {
     title: "Cart",
     link: "/profile/cart",
+  },
+  {
+    title: "Orders",
+    link: "/profile/orders",
+  },
+];
+
+const navLinks2 = [
+  {
+    title: "Contact",
+    link: "/contact",
+  },
+  {
+    title: "Become a plus member",
+    link: "/becomeplus",
   },
 ];
 
@@ -72,6 +87,17 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 export default function MobileDrawer() {
+  const currentUser: UserObject = useSelector(
+    (state: { user: UserObject }) => state.user
+  );
+  const dispatch: React.Dispatch<AnyAction> = useDispatch();
+  const handleLogout: () => Promise<void> = async () => {
+    dispatch(logoutUser());
+    const logout = await axios.get(
+      "http://localhost:8000/techwise/client/api/user/logout"
+    );
+    console.log(logout);
+  };
   const theme = useTheme();
   const [open, setOpen] = React.useState(false);
 
@@ -98,7 +124,7 @@ export default function MobileDrawer() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Persistent drawer
+            Techwise B2B Platform
           </Typography>
         </Toolbar>
       </AppBar>
@@ -132,7 +158,10 @@ export default function MobileDrawer() {
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
-                <NavLink to={text.link}>
+                <NavLink
+                  to={text.link}
+                  style={{ textDecoration: "none", color: "black" }}
+                >
                   <ListItemText primary={text.title} />
                 </NavLink>
               </ListItemButton>
@@ -141,16 +170,50 @@ export default function MobileDrawer() {
         </List>
         <Divider />
         <List>
-          {["All mail", "Trash", "Spam"].map((text, index) => (
-            <ListItem key={text} disablePadding>
+          {navLinks2.map((text, index) => (
+            <ListItem key={index} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
                 </ListItemIcon>
-                <ListItemText primary={text} />
+                <NavLink
+                  to={text.link}
+                  style={{ textDecoration: "none", color: "black" }}
+                >
+                  <ListItemText primary={text.title} />
+                </NavLink>
               </ListItemButton>
             </ListItem>
           ))}
+          <ListItem disablePadding>
+            <ListItemButton onClick={handleLogout}>
+              <ListItemIcon>
+                <MailIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            {currentUser.user ? (
+              <ListItemButton>
+                <ListItemIcon>
+                  <MailIcon />
+                </ListItemIcon>
+                <ListItemText
+                  primary={
+                    currentUser.user ? `${currentUser.user?.username}` : "Login"
+                  }
+                />
+              </ListItemButton>
+            ) : (
+              <ListItemButton href="/welcome">
+                <ListItemIcon>
+                  <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary={"Login"} />
+              </ListItemButton>
+            )}
+          </ListItem>
         </List>
       </Drawer>
     </Box>

@@ -107,7 +107,7 @@ function NavBar() {
     nav(`category/${category}/view/${value?.replaceAll(" ", "-")}`);
   };
 
-  const cartItemsNumber: number | undefined = product?.length - 1;
+  const cartItemsNumber: number | undefined | null = product?.length - 1;
 
   console.log(value);
 
@@ -166,9 +166,9 @@ function NavBar() {
                     },
                   }}
                 >
-                  {categories.map((option) => (
+                  {categories.map((option, i: number) => (
                     <MenuItem
-                      key={option}
+                      key={i}
                       onClick={() => getProductsByCategory(option)}
                     >
                       {option}
@@ -272,8 +272,8 @@ function NavBar() {
               },
             }}
           >
-            {product?.map((product: Product) => (
-              <MenuItem key={product._id}>
+            {product?.map((product: Product, i: number) => (
+              <MenuItem key={i}>
                 <div
                   style={{
                     display: "flex",

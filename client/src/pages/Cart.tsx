@@ -1,9 +1,11 @@
 import {
   Button,
   CircularProgress,
+  Container,
   List,
   ListItem,
   Typography,
+  useMediaQuery,
 } from "@mui/material";
 import React from "react";
 import { ProductContext } from "../context/ProductContext";
@@ -13,6 +15,7 @@ import { UserObject } from "../store/reducers";
 import { useSelector } from "react-redux";
 
 function Cart() {
+  const isMatch: boolean = useMediaQuery("(min-width: 600px)");
   const [loading, setLoading] = React.useState(false);
   const [loadingText, setLoadingText] = React.useState(false);
   const { product } = React.useContext(ProductContext);
@@ -75,13 +78,13 @@ function Cart() {
   };
 
   return (
-    <div
-      style={{
+    <Container
+      sx={{
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
-        marginTop: "-750px",
+        marginTop: { lg: "-750px", xs: "0" },
         marginBottom: "500px",
       }}
     >
@@ -90,6 +93,8 @@ function Cart() {
           display: "flex",
           justifyContent: "space-between",
           width: "800px",
+          flexDirection: isMatch ? "row" : "column",
+          alignItems: isMatch ? "normal" : "center",
         }}
       >
         {products?.length === 0 ? (
@@ -101,7 +106,11 @@ function Cart() {
                 {products?.map((el: Product, i: number) => {
                   return (
                     <ListItem key={i}>
-                      <img src={el.images[0]} alt="prod-img" />
+                      <img
+                        src={el.images[0]}
+                        alt="prod-img"
+                        style={{ width: "250px", height: "250px" }}
+                      />
                       <div style={{ marginLeft: "30px" }}>
                         <Typography>{el.name}</Typography>
                         <Typography>${el.price}</Typography>
@@ -172,7 +181,7 @@ function Cart() {
           </>
         )}
       </div>
-    </div>
+    </Container>
   );
 }
 
