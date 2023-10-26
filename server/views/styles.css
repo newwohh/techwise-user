@@ -107,6 +107,8 @@ ul li {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
+  text-align: center;
+  align-items: center;
 }
 .footer h4 {
   font-size: 16px;
@@ -119,6 +121,11 @@ ul li {
 .footer ul li {
   margin: 10px 0;
 }
+
+.footer-logo {
+  text-align: center;
+}
+
 .footer .footer-logo p {
   font-size: 14px;
 }

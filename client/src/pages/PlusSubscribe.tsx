@@ -1,7 +1,32 @@
 import { Button } from "@mui/material";
+import axios from "axios";
 import React from "react";
+import { UserObject, setUserObject } from "../store/reducers";
+import { useDispatch, useSelector } from "react-redux";
 
 function PlusSubscribe() {
+  const currentUser: UserObject = useSelector(
+    (state: { user: UserObject }) => state.user
+  );
+  const dispatch = useDispatch();
+
+  const plusMemberHandler = async () => {
+    try {
+      const request = await axios.put(
+        "http://localhost:8000/techwise/client/api/user/becomePlus",
+        {
+          id: currentUser.user?._id,
+        }
+      );
+
+      const data = request.data.user;
+      dispatch(setUserObject(data));
+    } catch (error) {
+      alert("error");
+      console.log(error);
+    }
+  };
+
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
       <div
@@ -45,7 +70,7 @@ function PlusSubscribe() {
             </p>
           </li>
         </ol>
-        <Button>Become Plus Member</Button>
+        <Button onClick={plusMemberHandler}>Become Plus Member</Button>
       </div>
     </div>
   );

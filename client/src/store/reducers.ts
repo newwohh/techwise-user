@@ -22,6 +22,7 @@ export interface User {
   businessType?: BusinessType;
   businessName?: string;
   gstRegisteredNumber?: string;
+  isPlusMember?: boolean;
 }
 
 interface Address {

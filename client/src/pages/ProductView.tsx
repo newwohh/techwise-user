@@ -40,6 +40,9 @@ function ProductView() {
   const [unit, setUnit] = React.useState<string | undefined>();
   const { user } = useSelector((state: { user: UserObject }) => state.user);
   const [open, setOpen] = React.useState(false);
+  const currentUser: UserObject = useSelector(
+    (state: { user: UserObject }) => state.user
+  );
 
   const handleClick = () => {
     setOpen(true);
@@ -156,6 +159,9 @@ function ProductView() {
               <MenuItem value={1000}>1000 units</MenuItem>
               <MenuItem value={2000}>2000 units</MenuItem>
               <MenuItem value={5000}>5000 units</MenuItem>
+              {currentUser.user?.isPlusMember && (
+                <MenuItem value={10000}>10000 units (Plus) </MenuItem>
+              )}
             </Select>
             {qtyError && (
               <Typography sx={{ color: "red" }}>

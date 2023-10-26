@@ -3,7 +3,6 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import {
-  Box,
   Button,
   CircularProgress,
   FormControl,
@@ -97,6 +96,7 @@ function Register() {
 
   const handleChange = (event: SelectChangeEvent) => {
     setBusinessType(event.target.value as string);
+    setUser({ ...user, businessType: businessType });
   };
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,7 +112,7 @@ function Register() {
     password: "",
     passwordConfirm: "",
     businessName: "",
-    businessType,
+    businessType: businessType,
     gstRegisteredNumber: "",
     phoneNumber: 0,
     dateOfBirth: formatDate(dateValue),
@@ -134,7 +134,7 @@ function Register() {
     if (
       !isCredentialsValid(user.email, user.password) ||
       user.gstRegisteredNumber.length !== 15 ||
-      user.phoneNumber !== 10
+      user.phoneNumber.toString().length !== 10
     ) {
       setError(false);
       return;
@@ -156,11 +156,16 @@ function Register() {
       } catch (error) {
         setLoadingText(true);
         console.log(error);
+        alert("error try again");
       }
     }
   };
 
-  console.log(businessType, user);
+  console.log(
+    businessType,
+    user.gstRegisteredNumber.length,
+    user.phoneNumber.toString().length
+  );
 
   return (
     <>
@@ -169,19 +174,12 @@ function Register() {
       >
         <img src={logo} alt="logo" style={{ width: "50px" }} />
       </div>
-      <Box
-        sx={{
+      <div
+        style={{
           display: "flex",
           justifyContent: "center",
-          width: {
-            sm: "150px",
-            lg: "200vh",
-          },
           height: "100vh",
           alignItems: "center",
-          padding: {
-            sm: "100px",
-          },
         }}
       >
         {step ? (
@@ -231,7 +229,7 @@ function Register() {
                     labelId="demo-simple-select-label"
                     id="demo-simple-select"
                     value={businessType}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e)}
                   >
                     {allBusinessTypes.map((el: string, i: number) => {
                       return (
@@ -293,57 +291,24 @@ function Register() {
                   >
                     <Typography>Back</Typography>
                   </Button>
-                  {loading ? (
-                    <Button
-                      disabled
-                      sx={{
+
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      border: "1px solid black",
+                      width: "150px",
+                      height: "45px",
+                      color: "black",
+                      "&:hover": {
+                        backgroundColor: "black",
                         border: "1px solid black",
-                        width: "150px",
-                        height: "45px",
-                        color: "black",
-                        "&:hover": {
-                          backgroundColor: "black",
-                          border: "1px solid black",
-                          color: "white",
-                        },
-                      }}
-                    >
-                      {loadingText ? (
-                        "Failed"
-                      ) : (
-                        <CircularProgress
-                          size={"17px"}
-                          sx={{ color: "black" }}
-                        />
-                      )}
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="outlined"
-                      sx={{
-                        border: "1px solid black",
-                        width: "150px",
-                        height: "45px",
-                        color: "black",
-                        "&:hover": {
-                          backgroundColor: "black",
-                          border: "1px solid black",
-                          color: "white",
-                        },
-                      }}
-                      onClick={handleSubmit}
-                    >
-                      <Typography>
-                        {loading ? (
-                          <CircularProgress
-                            sx={{ width: "10px", height: "20px" }}
-                          />
-                        ) : (
-                          "Submit"
-                        )}
-                      </Typography>
-                    </Button>
-                  )}
+                        color: "white",
+                      },
+                    }}
+                    onClick={handleSubmit}
+                  >
+                    <Typography>Submit</Typography>
+                  </Button>
                 </div>
               </FormGroup>
             </div>
@@ -525,7 +490,7 @@ function Register() {
             />
           </div>
         )}
-      </Box>
+      </div>
     </>
   );
 }

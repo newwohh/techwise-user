@@ -1,5 +1,6 @@
 const Order = require("../models/orderModel");
 const Product = require("../models/productModel");
+const User = require("../models/userModel");
 
 exports.createOrder = async (req, res, next) => {
   try {
@@ -20,15 +21,42 @@ exports.createOrder = async (req, res, next) => {
     if (!orderDetails.products || !orderDetails.user) {
       return res.status(500).send("failed");
     }
-    const createOrderNew = await Order.create(orderDetails);
 
-    if (createOrderNew) {
-      res.status(200).json({
-        status: "success",
-        data: createOrderNew,
-      });
-    } else {
-      res.status(500).send("failed");
+    const products = orderDetails.products;
+    const isMoreQuantity = products.some((el) => el.quantity > 5000);
+    const user = await User.findById(orderDetails.user);
+
+    console.log(orderDetails.products, isMoreQuantity);
+
+    if (isMoreQuantity) {
+      if (
+        user.isPlusMember &&
+        user.addresses &&
+        user.gstRegisteredNumber &&
+        user.businessName
+      ) {
+        const createOrderNew = await Order.create(orderDetails);
+        if (createOrderNew) {
+          res.status(200).json({
+            status: "success",
+            data: createOrderNew,
+          });
+        } else {
+          res.status(500).send("failed");
+        }
+      } else {
+        res.status(500).send("failed");
+      }
+    } else if (!isMoreQuantity) {
+      const createOrderNew = await Order.create(orderDetails);
+      if (createOrderNew) {
+        res.status(200).json({
+          status: "success",
+          data: createOrderNew,
+        });
+      } else {
+        res.status(500).send("failed");
+      }
     }
   } catch (error) {
     console.log(error.message);

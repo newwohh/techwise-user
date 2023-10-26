@@ -47,7 +47,7 @@ const userSchema = new mongoose.Schema({
       validator: function (value) {
         const today = new Date();
         const maxDate = new Date("2005-01-01");
-        return value <= maxDate && value < today;
+        return value >= maxDate && value < today;
       },
       message: "User must be born before 2005.",
     },

@@ -1,15 +1,26 @@
 import axios from "axios";
 
-export const placeOrder = async (data) => {
-  console.log(data);
-  const response = await axios.post(
-    "http://localhost:8000/techwise/client/api/order/create",
-    data
-  );
-  console.log(response.data);
-};
+export interface Data {
+  amount: number;
+  currency: string;
+  id: string;
+  name: string;
+}
 
-export const initPayment = async (data) => {
+interface Response {
+  id: string;
+  currency: string;
+  amount: number;
+  name: string;
+  description: string;
+  image: string;
+  orderCreationId: string;
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+export const initPayment = async (data: Data) => {
   const options = {
     key: "rzp_test_aQprQUbu7mdh26",
     amount: data.amount.toString(),
@@ -18,7 +29,7 @@ export const initPayment = async (data) => {
     description: "Test Transaction",
     image: "ing",
     order_id: data.id,
-    handler: async function (response) {
+    handler: async function (response: Response) {
       console.log(response);
       const dataReq = {
         orderCreationId: data.id,

@@ -185,17 +185,19 @@ export default function MobileDrawer() {
               </ListItemButton>
             </ListItem>
           ))}
-          <ListItem disablePadding>
-            <ListItemButton onClick={handleLogout}>
-              <ListItemIcon>
-                <MailIcon />
-              </ListItemIcon>
-              <ListItemText primary="Logout" />
-            </ListItemButton>
-          </ListItem>
+          {currentUser.user && (
+            <ListItem disablePadding>
+              <ListItemButton onClick={handleLogout}>
+                <ListItemIcon>
+                  <MailIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItemButton>
+            </ListItem>
+          )}
           <ListItem disablePadding>
             {currentUser.user ? (
-              <ListItemButton>
+              <ListItemButton href="/profile">
                 <ListItemIcon>
                   <MailIcon />
                 </ListItemIcon>

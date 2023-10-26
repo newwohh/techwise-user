@@ -1,6 +1,5 @@
 import {
   Button,
-  CircularProgress,
   Container,
   List,
   ListItem,
@@ -10,9 +9,10 @@ import {
 import React from "react";
 import { ProductContext } from "../context/ProductContext";
 import { Product } from "./ProductsByCategories";
-import { placeOrder } from "../api";
+import { initPayment } from "../api";
 import { UserObject } from "../store/reducers";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 function Cart() {
   const isMatch: boolean = useMediaQuery("(min-width: 600px)");
@@ -45,10 +45,33 @@ function Cart() {
     totalAmount: Total,
   };
 
+  const placeOrder = async (data, paymentData) => {
+    try {
+      console.log(data);
+      const response = await axios.post(
+        "http://localhost:8000/techwise/client/api/order/create",
+        data
+      );
+
+      if (response.status === 200) {
+        initPayment(paymentData);
+        setLoadingText(false);
+        setLoading(false);
+      } else {
+        setLoadingText(true);
+        setLoading(false);
+      }
+    } catch (error) {
+      setLoading(false);
+      setLoadingText(true);
+      console.log(error.message);
+    }
+  };
+
   const createPayment = async (data) => {
     try {
       setLoading(true);
-      const request = await fetch(
+      const request: Response = await fetch(
         "http://localhost:8000/techwise/client/api/payment/order",
         {
           method: "POST",
@@ -56,7 +79,7 @@ function Cart() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            amount: 100000,
+            amount: data.totalAmount * 100,
           }),
           credentials: "include",
         }
@@ -65,12 +88,11 @@ function Cart() {
       const response = await request.json();
       console.log(response);
       if (response.id) {
-        // initPayment(response);
-        placeOrder(data);
-        setLoadingText(true);
+        placeOrder(data, response);
       }
     } catch (error) {
-      setLoadingText(true);
+      setLoading(false);
+      setLoadingText(false);
       if (error instanceof Error) {
         console.log(error.message);
       }
@@ -151,14 +173,7 @@ function Cart() {
                         "&:hover": { backgroundColor: "black", color: "white" },
                       }}
                     >
-                      {loadingText ? (
-                        "Success"
-                      ) : (
-                        <CircularProgress
-                          size={"17px"}
-                          sx={{ color: "white" }}
-                        />
-                      )}
+                      Loading...
                     </Button>
                   ) : (
                     <Button
@@ -172,7 +187,7 @@ function Cart() {
                       }}
                       onClick={() => createPayment(orderData)}
                     >
-                      Place order
+                      {loadingText ? "Failed Try again" : "Place Order"}
                     </Button>
                   )}
                 </ListItem>

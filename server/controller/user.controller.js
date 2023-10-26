@@ -212,6 +212,16 @@ exports.becomePlus = async (req, res) => {
     });
 
     if (plusUser) {
+      const cookieOptions = {
+        expires: new Date(
+          Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+        sameSite: "None",
+        secure: true,
+      };
+
+      res.cookie("plususer", true, cookieOptions);
       return res.json({
         status: "success",
         user: plusUser,
