@@ -39,15 +39,21 @@ function ManageAddress() {
   const handleClose = () => setOpen(false);
 
   const addAddressHandler = async () => {
-    const response = await axios.put(
-      "http://localhost:8000/techwise/client/api/user/addAddress",
-      address
-    );
+    try {
+      const response = await axios.put(
+        "http://localhost:8000/techwise/client/api/user/addAddress",
+        address
+      );
 
-    console.log(response.data);
-    const data = response.data.createAddress;
-    if (response.data.createAddress) {
-      dispatch(setUserObject(data));
+      console.log(response.data);
+      const data = response.data.createAddress;
+      if (response.data.createAddress) {
+        dispatch(setUserObject(data));
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        alert(error.message);
+      }
     }
   };
 
@@ -76,15 +82,17 @@ function ManageAddress() {
         flexDirection: "column",
         alignItems: "center",
         textAlign: "center",
-        marginTop: "-550px",
-        marginBottom: "400px",
+        marginTop: "-650px",
+        marginBottom: "300px",
       }}
     >
       <div
         style={{
-          display: "flex",
-          justifyContent: "space-between",
-          width: "800px",
+          display: "grid",
+          gridTemplateColumns: "auto auto",
+          columnGap: "50px",
+          rowGap: "50px",
+          width: "600px",
         }}
       >
         {currentUser.user?.addresses.map((el, i) => {
@@ -93,7 +101,7 @@ function ManageAddress() {
               key={i}
               style={{
                 padding: "20px",
-                width: "300px",
+                width: "200px",
                 display: "flex",
                 height: "200px",
                 flexDirection: "column",
@@ -122,7 +130,7 @@ function ManageAddress() {
         <div
           style={{
             padding: "20px",
-            width: "300px",
+            width: "200px",
             display: "flex",
             height: "200px",
             flexDirection: "column",

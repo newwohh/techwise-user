@@ -78,10 +78,20 @@ exports.updateUser = async (req, res) => {
   console.log(req.body);
   try {
     const id = req.body.id;
-    const { email, mobile } = req.body;
+
+    if (!id) {
+      return res.status(400).json({ error: "Missing required data." });
+    }
+
+    const { fullName, email, mobile } = req.body;
+
+    if (!email || !mobile) {
+      return res.status(400).json({ error: "Missing required data." });
+    }
+
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { fullName: req.body.name, phoneNumber: mobile, email },
+      { fullName: fullName, phoneNumber: mobile, email: email },
       { new: true }
     );
 
@@ -104,6 +114,11 @@ exports.updateUser = async (req, res) => {
 exports.uploadProfilePic = async (req, res) => {
   try {
     const _id = req.body.user;
+
+    if (!id) {
+      return res.status(400).json({ error: "Missing required data." });
+    }
+
     const uploadImage = async (image) => {
       const upload = await cloudinary.uploader.upload(
         image,
@@ -141,37 +156,65 @@ exports.uploadProfilePic = async (req, res) => {
   }
 };
 
+const updateUserAddress = async (res, id, Model, address) => {
+  const createAddress = await Model.findByIdAndUpdate(
+    id,
+    {
+      $push: {
+        addresses: {
+          addressLine1: address.addressLine1,
+          addressLine2: address.addressLine2,
+          city: address.city,
+          postalCode: address.postalCode,
+          country: address.country,
+        },
+      },
+    },
+    { new: true }
+  );
+
+  if (createAddress) {
+    return res.json({
+      status: "success",
+      createAddress,
+    });
+  } else {
+    return res.status(404).json({ error: "User not found." });
+  }
+};
+
 exports.addAddress = async (req, res) => {
   console.log(req.body);
   try {
     const id = req.body.id;
-    const { addressLine1, city, postalCode, country } = req.body;
-    if (!addressLine1 || !city || !postalCode || !country) {
+
+    if (!id) {
       return res.status(400).json({ error: "Missing required data." });
     }
-    const createAddress = await User.findByIdAndUpdate(
-      id,
-      {
-        $push: {
-          addresses: {
-            addressLine1: addressLine1,
-            addressLine2: req.body.addressLine2,
-            city: city,
-            postalCode: postalCode,
-            country: country,
-          },
-        },
-      },
-      { new: true }
-    );
 
-    if (createAddress) {
-      return res.json({
-        status: "success",
-        createAddress,
-      });
+    const address = {
+      addressLine1: req.body.addressLine1,
+      addressLine2: req.body.addressLine2,
+      city: req.body.city,
+      postalCode: req.body.postalCode,
+      country: req.body.country,
+    };
+    if (!address) {
+      return res.status(400).json({ error: "Missing required data." });
+    }
+
+    const checkUser = await User.findById(id);
+
+    if (checkUser.addresses.length == 0) {
+      const createAddress = await updateUserAddress(res, id, User, address);
+      return createAddress;
     } else {
-      return res.status(404).json({ error: "User not found." });
+      if (checkUser.isPlusMember) {
+        const createAddress = await updateUserAddress(res, id, User, address);
+        return createAddress;
+      } else {
+        return res.status(404).json({ error: "Subscribe to plus" });
+      }
     }
   } catch (error) {
     console.log(error.message);
@@ -181,7 +224,16 @@ exports.addAddress = async (req, res) => {
 exports.removeAddress = async (req, res) => {
   try {
     const userId = req.body.id;
+
+    if (!userId) {
+      return res.status(400).json({ error: "Missing required data." });
+    }
+
     const addressId = req.body.addressId;
+
+    if (!addressId) {
+      return res.status(400).json({ error: "Missing required data." });
+    }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
@@ -206,6 +258,10 @@ exports.removeAddress = async (req, res) => {
 exports.becomePlus = async (req, res) => {
   try {
     const id = req.body.id;
+
+    if (!id) {
+      return res.status(400).json({ error: "Missing required data." });
+    }
 
     const plusUser = await User.findByIdAndUpdate(id, {
       isPlusMember: true,

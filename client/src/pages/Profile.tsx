@@ -102,7 +102,9 @@ function Profile() {
         updateUser
       );
 
-      console.log(request.data);
+      const data = request.data.updatedUser;
+      console.log(data);
+      dispatch(setUserObject(data));
     } catch (error) {
       if (error instanceof Error) {
         console.log(error.message);
@@ -174,22 +176,12 @@ function Profile() {
             placeholder={currentUser.user?.fullName}
           />
         )}
-        {update ? (
-          <TextField
-            onChange={(e) =>
-              setUpdateUser({
-                ...updateUser,
-                username: e.target.value,
-              })
-            }
-          />
-        ) : (
-          <TextField
-            disabled
-            sx={{ width: { xs: "230px" } }}
-            placeholder={currentUser.user?.username}
-          />
-        )}
+
+        <TextField
+          disabled
+          sx={{ width: { xs: "230px" } }}
+          placeholder={currentUser.user?.username}
+        />
       </div>
       <div style={{ display: "flex", marginTop: "40px" }}>
         <FormControl>
@@ -255,7 +247,15 @@ function Profile() {
         }}
       >
         {update ? (
-          <TextField placeholder="Email" />
+          <TextField
+            onChange={(e) =>
+              setUpdateUser({
+                ...updateUser,
+                email: e.target.value,
+              })
+            }
+            placeholder="Email"
+          />
         ) : (
           <TextField disabled placeholder={currentUser.user?.email} />
         )}
